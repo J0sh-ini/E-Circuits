@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, useMemo } from "react";
+import React, { useEffect, useCallback, useRef, useMemo, useState } from "react";
 import {
   ReactFlow,
   MiniMap,
@@ -26,8 +26,12 @@ const initialNodes = [];
 
 export default function CircuitBuilder() {
   const reactFlowWrapper = useRef(null);
+  const dustbinRef = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [isDraggingNode, setIsDraggingNode] = useState(false);
+  const [overDustbin, setOverDustbin] = useState(false);
+  const [draggingNodeId, setDraggingNodeId] = useState(null);
 
   // 3. This hook gives us access to the React Flow instance
   const { screenToFlowPosition } = useReactFlow();
@@ -49,6 +53,45 @@ export default function CircuitBuilder() {
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
+  );
+
+  // Remove an edge when it's double-clicked
+  const onEdgeDoubleClick = useCallback(
+    (event, edge) => {
+      event.preventDefault();
+      setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+    },
+    [setEdges]
+  );
+
+  // Node drag handlers for dustbin deletion
+  const onNodeDragStart = useCallback((event, node) => {
+    setIsDraggingNode(true);
+    setDraggingNodeId(node.id);
+    setOverDustbin(false);
+  }, []);
+
+  const onNodeDrag = useCallback((event, node) => {
+    if (!dustbinRef.current) return;
+    const rect = dustbinRef.current.getBoundingClientRect();
+    const x = event.clientX;
+    const y = event.clientY;
+    const over = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    setOverDustbin(over);
+  }, []);
+
+  const onNodeDragStop = useCallback(
+    (event, node) => {
+      setIsDraggingNode(false);
+      if (overDustbin) {
+        // remove node and connected edges
+        setNodes((nds) => nds.filter((n) => n.id !== node.id));
+        setEdges((eds) => eds.filter((e) => e.source !== node.id && e.target !== node.id));
+      }
+      setOverDustbin(false);
+      setDraggingNodeId(null);
+    },
+    [overDustbin, setNodes, setEdges]
   );
 
   // 4. Handle Drag Over (Allow dropping)
@@ -80,7 +123,7 @@ export default function CircuitBuilder() {
         id: getId(),
         type,
         position,
-        data: { label: `${type} node`, inputA: 0, inputB: 0 }, // Init defaults
+        data: { label: `${type} node`, Vcc: 0 ,inputA: 0, inputB: 0 ,outputAB: 0,inputC:0,inputD:0,outputCD:0,inputE:0,inputF:0,outputEF:0,inputG:0,inputH:0,outputGH:0,GND:0 }, // Init defaults
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -209,6 +252,10 @@ export default function CircuitBuilder() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
+          onEdgeDoubleClick={onEdgeDoubleClick}
+          onNodeDragStart={onNodeDragStart}
+          onNodeDrag={onNodeDrag}
+          onNodeDragStop={onNodeDragStop}
           onDragOver={onDragOver}
           onDrop={onDrop}
           nodeTypes={nodeTypes}
@@ -219,6 +266,37 @@ export default function CircuitBuilder() {
           <MiniMap />
           <Background variant="dots" gap={12} size={1} />
         </ReactFlow>
+        {/* Dustbin — appears while dragging a node */}
+        <div
+          ref={dustbinRef}
+          aria-hidden
+          style={{
+            position: "absolute",
+            right: 24,
+            bottom: 24,
+            width: 72,
+            height: 72,
+            borderRadius: 10,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: overDustbin ? "#ffe6e6" : "rgba(0,0,0,0.06)",
+            boxShadow: overDustbin ? "0 6px 16px rgba(255,0,0,0.15)" : "0 6px 18px rgba(0,0,0,0.08)",
+            transition: "background .12s, transform .12s",
+            transform: overDustbin ? "scale(1.06)" : "scale(1)",
+            zIndex: 9999,
+            pointerEvents: isDraggingNode ? "auto" : "none",
+          }}
+          title={isDraggingNode ? "Drop here to delete node" : ""}
+        >
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 6h18" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round"/>
+            <path d="M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M10 11v5" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round"/>
+            <path d="M14 11v5" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round"/>
+            <path d="M9 6l1-2h4l1 2" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
       </div>
     </div>
   );

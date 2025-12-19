@@ -53,6 +53,7 @@ export default function CircuitBuilder() {
   const [sideBar,setSideBar]=useState(true);
   // 3. This hook gives us access to the React Flow instance
   const { screenToFlowPosition } = useReactFlow();
+  
 
   // Node Types
   const nodeTypes = useMemo(

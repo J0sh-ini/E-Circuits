@@ -1,5 +1,8 @@
 // src/components/Sidebar.jsx
 import React from "react";
+import HelpSection from "./HelpSection";
+import { useState } from "react";
+
 
 export default function Sidebar() {
   const onDragStart = (event, nodeType) => {
@@ -7,7 +10,7 @@ export default function Sidebar() {
     event.dataTransfer.setData("application/reactflow", nodeType);
     event.dataTransfer.effectAllowed = "move";
   };
-
+const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <aside
       style={{
@@ -15,6 +18,10 @@ export default function Sidebar() {
         background: "#6c6c6c",
       }}
     >
+      <HelpSection isOpen={isModalOpen} onClose={()=>{setIsModalOpen(false)}}>
+        1)Drag and drop the required gates into the canvas <br></br>
+        2)Select unwanted element wire or gate and click backspace to remove them
+        </HelpSection>
       <h3
         style={{
           background: "#1a1a1a",
@@ -90,6 +97,7 @@ export default function Sidebar() {
         <div
           className="help"
           style={{ ...dndStyle, cursor: "pointer", marginTop: "auto" }}
+          onClick={()=>{setIsModalOpen(true)}}
         >
           Help
         </div>

@@ -17,14 +17,14 @@ const nodeStyle = {
 
 const AndGateNode = ({ data }) => {
   // We expect the main app to pass the current state in the data object
-  const inputAVal = data.inputA || 0;
-  const inputBVal = data.inputB || 0;
-   const inputCVal = data.inputC || 0;
-  const inputDVal = data.inputD || 0;
-   const inputEVal = data.inputE || 0;
-  const inputFVal = data.inputF || 0;
-  const inputGVal = data.inputG || 0;
-  const inputHVal = data.inputH || 0;
+  const inputAVal = data.pin2 || 0;
+  const inputBVal = data.pin3 || 0;
+   const inputCVal = data.pin5 || 0;
+  const inputDVal = data.pin6 || 0;
+   const inputEVal = data.pin8 || 0;
+  const inputFVal = data.pin9 || 0;
+  const inputGVal = data.pin11 || 0;
+  const inputHVal = data.pin12 || 0;
   // Logic is technically calculated elsewhere, but we visualize it here
   const outputABVal = inputAVal && inputBVal ? 1 : 0;
 const outputCDVal = inputCVal && inputDVal ? 1 : 0;
@@ -134,8 +134,7 @@ const outputGHVal = inputGVal && inputHVal ? 1 : 0;
       <div>AND</div>
       {/* Optional: Visualizing current state for debugging */}
       <div style={{ fontSize: "0.7em", marginTop: "5px", color: "#666" }}>
-        In: {inputAVal},{inputBVal} <br />
-        Out: <strong>{outputABVal}</strong>
+        IC 7408
       </div>
 
       {/* --- OUTPUT HANDLE (Right Side) --- */}

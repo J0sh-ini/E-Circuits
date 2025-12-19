@@ -13,43 +13,43 @@ const InputNode = ({ id, data }) => {
 
   const style = {
     padding: "10px",
-    border: "1px solid #333",
-    borderRadius: "5px",
+    border: "1px solid #000000ff",
+    borderRadius: "50%",
     background: "#9d9d9dff",
     display: "flex",
-    flexDirection: "column",
     alignItems: "center",
-    minWidth: "60px",
+    justifyContent:"center",
+    height:"30px",
+    width:"30px",
+     boxShadow: isOn ? "0 0 20px #fb2424ff" : "none",
+      transition: "all 0.3s ease",
   };
 
   return (
     <div style={style}>
-      <div
-        style={{ marginBottom: "5px", fontSize: "12px", fontWeight: "bold" }}
-      >
-        INPUT
-      </div>
+      
 
       {/* The Toggle Switch UI */}
       <div
         onClick={toggleSwitch}
         style={{
           cursor: "pointer",
-          padding: "5px 10px",
-          background: isOn ? "#22c55e" : "#ccc", // Green if ON
+         // padding: "10px",
+          height:"25px",
+          width:"25px",
+          background: isOn ? "#9d0000ff" : "#ccc", // Green if ON
           color: "white",
-          borderRadius: "15px",
-          fontSize: "12px",
+          borderRadius: "50%",
           userSelect: "none",
         }}
       >
-        {isOn ? "ON (1)" : "OFF (0)"}
+        
       </div>
 
       {/* Source Handle (Right Side) */}
       <Handle
         type="source"
-        position={Position.Right}
+        position={Position.Top}
         style={{ background: "#555" }}
       />
     </div>

@@ -10,7 +10,7 @@ import {
   useReactFlow, // Import Hook
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-
+import sideBarIcon from "./images/sideMenuIcon.png"
 import Sidebar from "./components/Sidebar";
 import AndGateNode from "./components/gates/andGate";
 import OrGateNode from "./components/gates/orGate";
@@ -22,17 +22,35 @@ import NotGateNode from "./components/gates/notGate";
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
-const initialNodes = [];
-
+const initialNodes =[];
+for(let i=1;i<9;i++)
+{
+  initialNodes.push({
+        id: "ip"+String(i),
+        type:'inputNode',
+        position:{x:100+(100*i),y:500},
+        data: {  value:0 }, 
+        deletable:false,
+        draggable:false,
+      });
+      initialNodes.push({
+        id: "op"+String(i),
+        type:'outputNode',
+        position:{x:100+(100*i),y:100},
+        data: {  value:0 }, 
+        deletable:false,
+        draggable:false,
+      });
+}
 export default function CircuitBuilder() {
   const reactFlowWrapper = useRef(null);
-  const dustbinRef = useRef(null);
+ // const dustbinRef = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [isDraggingNode, setIsDraggingNode] = useState(false);
-  const [overDustbin, setOverDustbin] = useState(false);
-  const [draggingNodeId, setDraggingNodeId] = useState(null);
-
+ // const [isDraggingNode, setIsDraggingNode] = useState(false);
+  //const [overDustbin, setOverDustbin] = useState(false);
+ // const [draggingNodeId, setDraggingNodeId] = useState(null);
+  const [sideBar,setSideBar]=useState(true);
   // 3. This hook gives us access to the React Flow instance
   const { screenToFlowPosition } = useReactFlow();
 
@@ -56,43 +74,43 @@ export default function CircuitBuilder() {
   );
 
   // Remove an edge when it's double-clicked
-  const onEdgeDoubleClick = useCallback(
-    (event, edge) => {
-      event.preventDefault();
-      setEdges((eds) => eds.filter((e) => e.id !== edge.id));
-    },
-    [setEdges]
-  );
+  // const onEdgeDoubleClick = useCallback(
+  //   (event, edge) => {
+  //     event.preventDefault();
+  //     setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+  //   },
+  //   [setEdges]
+  // );
 
   // Node drag handlers for dustbin deletion
-  const onNodeDragStart = useCallback((event, node) => {
-    setIsDraggingNode(true);
-    setDraggingNodeId(node.id);
-    setOverDustbin(false);
-  }, []);
+  // const onNodeDragStart = useCallback((event, node) => {
+  //   setIsDraggingNode(true);
+  //   setDraggingNodeId(node.id);
+  //   setOverDustbin(false);
+  // }, []);
 
-  const onNodeDrag = useCallback((event, node) => {
-    if (!dustbinRef.current) return;
-    const rect = dustbinRef.current.getBoundingClientRect();
-    const x = event.clientX;
-    const y = event.clientY;
-    const over = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
-    setOverDustbin(over);
-  }, []);
+  // const onNodeDrag = useCallback((event, node) => {
+  //   if (!dustbinRef.current) return;
+  //   const rect = dustbinRef.current.getBoundingClientRect();
+  //   const x = event.clientX;
+  //   const y = event.clientY;
+  //   const over = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+  //   setOverDustbin(over);
+  // }, []);
 
-  const onNodeDragStop = useCallback(
-    (event, node) => {
-      setIsDraggingNode(false);
-      if (overDustbin) {
-        // remove node and connected edges
-        setNodes((nds) => nds.filter((n) => n.id !== node.id));
-        setEdges((eds) => eds.filter((e) => e.source !== node.id && e.target !== node.id));
-      }
-      setOverDustbin(false);
-      setDraggingNodeId(null);
-    },
-    [overDustbin, setNodes, setEdges]
-  );
+  // const onNodeDragStop = useCallback(
+  //   (event, node) => {
+  //     setIsDraggingNode(false);
+  //     if (overDustbin) {
+  //       // remove node and connected edges
+  //       setNodes((nds) => nds.filter((n) => n.id !== node.id));
+  //       setEdges((eds) => eds.filter((e) => e.source !== node.id && e.target !== node.id));
+  //     }
+  //     setOverDustbin(false);
+  //     setDraggingNodeId(null);
+  //   },
+  //   [overDustbin, setNodes, setEdges]
+  // );
 
   // 4. Handle Drag Over (Allow dropping)
   const onDragOver = useCallback((event) => {
@@ -123,7 +141,7 @@ export default function CircuitBuilder() {
         id: getId(),
         type,
         position,
-        data: { label: `${type} node`, Vcc: 0 ,inputA: 0, inputB: 0 ,outputAB: 0,inputC:0,inputD:0,outputCD:0,inputE:0,inputF:0,outputEF:0,inputG:0,inputH:0,outputGH:0,GND:0 }, // Init defaults
+        data: { label: `${type} node`, pin1:0,pin2:0,pin3:0,pin4:0,pin5:0,pin6:0,pin7:0,pin8:0,pin9:0,pin10:0,pin11:0,pin12:0,pin13:0,pin14:0}, // Init defaults
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -237,10 +255,23 @@ export default function CircuitBuilder() {
   }, [edges, nodes.length, JSON.stringify(nodes.map((n) => n.data.value))]);
   // Dependency Note: We trigger this when edges change, node count changes,
   // or when an INPUT node's value changes.
-
+  function toggleSidebar()
+  {
+    setSideBar(!sideBar);
+  }
   return (
     <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
-      <Sidebar />
+      <button 
+      onClick={toggleSidebar} 
+      style={
+        {height: "50px",
+        background: "#1a1a1a",
+        border:"none",
+        position: "absolute",
+        zIndex:10000}}>
+        <img src={sideBarIcon} style={{height: "30px"}}></img>
+        </button>
+      {sideBar && <Sidebar />}
       <div
         className="reactflow-wrapper"
         ref={reactFlowWrapper}
@@ -252,21 +283,25 @@ export default function CircuitBuilder() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          onEdgeDoubleClick={onEdgeDoubleClick}
-          onNodeDragStart={onNodeDragStart}
-          onNodeDrag={onNodeDrag}
-          onNodeDragStop={onNodeDragStop}
+          // onEdgeDoubleClick={onEdgeDoubleClick}
+          // onNodeDragStart={onNodeDragStart}
+          // onNodeDrag={onNodeDrag}
+          // onNodeDragStop={onNodeDragStop}
           onDragOver={onDragOver}
           onDrop={onDrop}
           nodeTypes={nodeTypes}
           fitView
           colorMode="dark"
+          panOnDrag={false}
+          zoomOnScroll={false}
+          zoomOnPinch={false}
+          zoomOnDoubleClick={false}
         >
           <Controls />
-          <MiniMap />
-          <Background variant="dots" gap={12} size={1} />
+        { /* <MiniMap position="Top-right"/>*/}
+          <Background color="#000000ff" gap={12} size={1} />
         </ReactFlow>
-        {/* Dustbin — appears while dragging a node */}
+        {/* Dustbin — appears while dragging a node *
         <div
           ref={dustbinRef}
           aria-hidden
@@ -296,7 +331,7 @@ export default function CircuitBuilder() {
             <path d="M14 11v5" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round"/>
             <path d="M9 6l1-2h4l1 2" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-        </div>
+        </div>*/}
       </div>
     </div>
   );

@@ -20,10 +20,10 @@ export default function Sidebar() {
           background: "#1a1a1a",
           color: "#a4a4a4",
           margin: "0",
-          padding: "10px",
+          padding: "50px 10px 10px 10px",
+          
         }}
-      >
-        Simple Circuit Designer
+      > Simple Circuit Designer
       </h3>
       <div
         style={{
@@ -36,7 +36,7 @@ export default function Sidebar() {
       >
         <h3>Components</h3>
 
-        {/* Draggable Input Node */}
+        {/* Draggable Input Node 
         <div
           className="dndnode"
           onDragStart={(event) => onDragStart(event, "inputNode")}
@@ -46,7 +46,7 @@ export default function Sidebar() {
           Input (Switch)
         </div>
 
-        {/* Draggable Output Node */}
+        {/* Draggable Output Node *
         <div
           className="dndnode"
           onDragStart={(event) => onDragStart(event, "outputNode")}

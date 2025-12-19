@@ -11,8 +11,8 @@ const OutputNode = ({ data }) => {
     border: "1px solid #333",
     borderRadius: "50%", // Circular shape
     background: "#9d9d9dff",
-    width: "60px",
-    height: "60px",
+    width: "30px",
+    height: "30px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -21,8 +21,8 @@ const OutputNode = ({ data }) => {
   };
 
   const bulbStyle = {
-    width: "40px",
-    height: "40px",
+    width: "25px",
+    height: "25px",
     borderRadius: "50%",
     background: isLit ? "#fbbf24" : "#eee", // Yellow if ON, Gray if OFF
     border: "1px solid #999",
@@ -33,7 +33,7 @@ const OutputNode = ({ data }) => {
       {/* Target Handle (Left Side) */}
       <Handle
         type="target"
-        position={Position.Left}
+        position={Position.Bottom}
         style={{ background: "#555" }}
       />
 

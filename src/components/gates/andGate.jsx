@@ -73,7 +73,7 @@ const AndGateNode = ({ data }) => {
       />
       <Handle
         type="source"
-        position={Position.Bottom}
+        position={Position.Top}
         id="cd" // <--- IMPORTANT: Unique ID for this specific port
         style={{ left: "91%", background: "#555" }}
       />

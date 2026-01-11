@@ -7,7 +7,8 @@ import {
   useNodesState,
   useEdgesState,
   addEdge, 
-  useReactFlow, // Import Hook
+  useReactFlow,
+
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import sideBarIcon from "./images/sideMenuIcon.png"
@@ -18,7 +19,6 @@ import InputNode from "./components/gates/inputComponent";
 import OutputNode from "./components/gates/outputComponent";
 import NotGateNode from "./components/gates/notGate";
 
-// A helper to generate unique IDs
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
@@ -44,18 +44,13 @@ for(let i=1;i<9;i++)
 }
 export default function CircuitBuilder() {
   const reactFlowWrapper = useRef(null);
- // const dustbinRef = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
- // const [isDraggingNode, setIsDraggingNode] = useState(false);
-  //const [overDustbin, setOverDustbin] = useState(false);
- // const [draggingNodeId, setDraggingNodeId] = useState(null);
   const [sideBar,setSideBar]=useState(true);
-  // 3. This hook gives us access to the React Flow instance
   const { screenToFlowPosition } = useReactFlow();
   
 
-  // Node Types
+
   const nodeTypes = useMemo(
     () => ({
       andGate: AndGateNode,
@@ -68,71 +63,28 @@ export default function CircuitBuilder() {
     []
   );
 
-  // Adds edges to connect components
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
 
-  // Remove an edge when it's double-clicked
-  // const onEdgeDoubleClick = useCallback(
-  //   (event, edge) => {
-  //     event.preventDefault();
-  //     setEdges((eds) => eds.filter((e) => e.id !== edge.id));
-  //   },
-  //   [setEdges]
-  // );
-
-  // Node drag handlers for dustbin deletion
-  // const onNodeDragStart = useCallback((event, node) => {
-  //   setIsDraggingNode(true);
-  //   setDraggingNodeId(node.id);
-  //   setOverDustbin(false);
-  // }, []);
-
-  // const onNodeDrag = useCallback((event, node) => {
-  //   if (!dustbinRef.current) return;
-  //   const rect = dustbinRef.current.getBoundingClientRect();
-  //   const x = event.clientX;
-  //   const y = event.clientY;
-  //   const over = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
-  //   setOverDustbin(over);
-  // }, []);
-
-  // const onNodeDragStop = useCallback(
-  //   (event, node) => {
-  //     setIsDraggingNode(false);
-  //     if (overDustbin) {
-  //       // remove node and connected edges
-  //       setNodes((nds) => nds.filter((n) => n.id !== node.id));
-  //       setEdges((eds) => eds.filter((e) => e.source !== node.id && e.target !== node.id));
-  //     }
-  //     setOverDustbin(false);
-  //     setDraggingNodeId(null);
-  //   },
-  //   [overDustbin, setNodes, setEdges]
-  // );
-
-  // 4. Handle Drag Over (Allow dropping)
+  
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  // 5. Handle Drop (Create the new node)
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
 
       const type = event.dataTransfer.getData("application/reactflow");
 
-      // Check if the dropped element is valid
       if (typeof type === "undefined" || !type) {
         return;
       }
 
-      // precise calculation of drop position
-      // screenToFlowPosition handles zoom levels and panning automatically
+    
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
@@ -142,7 +94,7 @@ export default function CircuitBuilder() {
         id: getId(),
         type,
         position,
-        data: { label: `${type} node`, pin1:0,pin2:0,pin3:0,pin4:0,pin5:0,pin6:0,pin7:0,pin8:0,pin9:0,pin10:0,pin11:0,pin12:0,pin13:0,pin14:0}, // Init defaults
+        data: { label: `${type} node`, vcc:0,a:0,b:0,ab:0,c:0,d:0,cd:0,e:0,f:0,ef:0,g:0,h:0,gnd:0,value:0}, 
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -151,22 +103,40 @@ export default function CircuitBuilder() {
   );
 
   useEffect(() => {
-    // 1. Create a lightweight map of values: { nodeId: outputValue }
-    const nodeValues = new Map();
-
-    // 2. Initialize with Input Nodes
+   
+    const nodeValues = new Map();    
     nodes.forEach((node) => {
       if (node.type === "inputNode") {
         nodeValues.set(node.id, node.data.value ? 1 : 0);
       }
     });
 
+  
+
     // 3. Propagate values (Breadth-First approach or Multi-pass)
     // We loop a few times to ensure signals travel through chains of gates (Input -> AND -> OR -> Output)
     // In a real app, you would use a Topological Sort, but a loop of 3-5 is fine for small circuits.
     for (let i = 0; i < 5; i++) {
       edges.forEach((edge) => {
-        const sourceVal = nodeValues.get(edge.source) || 0;
+        // Get source value - handle gates that have multiple outputs
+        let sourceVal = 0;
+        const sourceNode = nodes.find((n) => n.id === edge.source);
+        
+        if (sourceNode?.type === "andGate") {
+          // For AND gates, the value depends on which output handle the edge comes from
+          const nodeData = nodeValues.get(edge.source);
+          if (edge.sourceHandle === "ab") {
+            sourceVal = nodeData?.ab || 0;
+          } else if (edge.sourceHandle === "cd") {
+            sourceVal = nodeData?.cd || 0;
+          } else if (edge.sourceHandle === "ef") {
+            sourceVal = nodeData?.ef || 0;
+          } else if (edge.sourceHandle === "gh") {
+            sourceVal = nodeData?.gh || 0;
+          }
+        } else {
+          sourceVal = nodeValues.get(edge.source) || 0;
+        }
 
         // Find the target node in our nodes array to know its type
         const targetNode = nodes.find((n) => n.id === edge.target);
@@ -179,7 +149,7 @@ export default function CircuitBuilder() {
           // We need to store inputs "A" and "B" separately for the gate
           // We create a temporary object for this node in our map if it doesn't exist
           if (!nodeValues.has(edge.target + "_inputs")) {
-            nodeValues.set(edge.target + "_inputs", { a: 0, b: 0 });
+            nodeValues.set(edge.target + "_inputs", { a: 0, b: 0 ,c:0,d:0,e:0,f:0,g:0,h:0,ab:0,cd:0,ef:0,gh:0});
           }
 
           const inputs = nodeValues.get(edge.target + "_inputs");
@@ -187,16 +157,25 @@ export default function CircuitBuilder() {
           // Assign value based on which handle was connected (id="a" or id="b")
           if (edge.targetHandle === "a") inputs.a = sourceVal;
           if (edge.targetHandle === "b") inputs.b = sourceVal;
+          if (edge.targetHandle === "c") inputs.c = sourceVal;
+          if (edge.targetHandle === "d") inputs.d = sourceVal;
+          if (edge.targetHandle === "e") inputs.e = sourceVal;
+          if (edge.targetHandle === "f") inputs.f = sourceVal;
+          if (edge.targetHandle === "g") inputs.g = sourceVal;
+          if (edge.targetHandle === "h") inputs.h = sourceVal;
 
           // Calculate Gate Output
-          let output = 0;
+          let ab,cd,ef,gh,output = 0;
           if (targetNode.type === "andGate") {
-            output = inputs.a && inputs.b ? 1 : 0;
+            ab = inputs.a && inputs.b ? 1 : 0;
+            cd=inputs.c && inputs.d ?1:0;
+            ef=inputs.e&&inputs.f?1:0;
+            gh=inputs.g&&inputs.h?1:0;
           } else if (targetNode.type === "orGate") {
             output = inputs.a || inputs.b ? 1 : 0;
           }
 
-          nodeValues.set(edge.target, output);
+          nodeValues.set(edge.target, {output,ab,cd,ef,gh});
         }
 
         if (targetNode.type === "notGate") {
@@ -221,13 +200,24 @@ export default function CircuitBuilder() {
     setNodes((nds) =>
       nds.map((node) => {
         // If it's an AND/OR gate, update its internal inputA/inputB data for visualization
-        if (node.type === "andGate" || node.type === "orGate") {
-          const inputs = nodeValues.get(node.id + "_inputs") || { a: 0, b: 0 };
+        if (node.type === "andGate") {
+          const outputs = nodeValues.get(node.id) || { ab: 0, cd: 0, ef: 0, gh: 0, output: 0 };
           // Optimization: Only return new object if data actually changed
-          if (node.data.inputA !== inputs.a || node.data.inputB !== inputs.b) {
+          if (node.data.ab !== outputs.ab || node.data.cd !== outputs.cd || node.data.ef !== outputs.ef || node.data.gh !== outputs.gh) {
             return {
               ...node,
-              data: { ...node.data, inputA: inputs.a, inputB: inputs.b },
+              data: { ...node.data, ab: outputs.ab, cd: outputs.cd, ef: outputs.ef, gh: outputs.gh },
+            };
+          }
+        }
+
+        if (node.type === "orGate") {
+          const inputs = nodeValues.get(node.id + "_inputs") || { a: 0, b: 0 };
+          // Optimization: Only return new object if data actually changed
+          if (node.data.a !== inputs.a || node.data.b !== inputs.b) {
+            return {
+              ...node,
+              data: { ...node.data, a: inputs.a, b: inputs.b },
             };
           }
         }
@@ -253,6 +243,8 @@ export default function CircuitBuilder() {
         return node;
       })
     );
+    
+
   }, [edges, nodes.length, JSON.stringify(nodes.map((n) => n.data.value))]);
   // Dependency Note: We trigger this when edges change, node count changes,
   // or when an INPUT node's value changes.

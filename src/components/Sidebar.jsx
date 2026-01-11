@@ -19,8 +19,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
       }}
     >
       <HelpSection isOpen={isModalOpen} onClose={()=>{setIsModalOpen(false)}}>
-        1)Drag and drop the required gates into the canvas <br></br>
-        2)Select unwanted element wire or gate and click backspace to remove them
+        
         </HelpSection>
       <h3
         style={{

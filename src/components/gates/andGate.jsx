@@ -16,24 +16,16 @@ const nodeStyle = {
 };
 
 const AndGateNode = ({ data }) => {
-  // We expect the main app to pass the current state in the data object
-  const inputAVal = data.pin2 || 0;
-  const inputBVal = data.pin3 || 0;
-   const inputCVal = data.pin5 || 0;
-  const inputDVal = data.pin6 || 0;
-   const inputEVal = data.pin8 || 0;
-  const inputFVal = data.pin9 || 0;
-  const inputGVal = data.pin11 || 0;
-  const inputHVal = data.pin12 || 0;
-  // Logic is technically calculated elsewhere, but we visualize it here
-  const outputABVal = inputAVal && inputBVal ? 1 : 0;
-const outputCDVal = inputCVal && inputDVal ? 1 : 0;
-const outputEFVal = inputEVal && inputFVal ? 1 : 0;
-const outputGHVal = inputGVal && inputHVal ? 1 : 0;
-  // Change border color if output is ON
+  // Receive calculated outputs from CircuitBuilder
+  const outputABVal = data.ab || 0;
+  const outputCDVal = data.cd || 0;
+  const outputEFVal = data.ef || 0;
+  const outputGHVal = data.gh || 0;
+  
+  // Change border color if any output is ON
   const dynamicStyle = {
     ...nodeStyle,
-    borderColor: outputABVal === 1 ? "#22c55e" : "#333", // Green if ON
+    borderColor: (outputABVal === 1 || outputCDVal === 1 || outputEFVal === 1 || outputGHVal === 1) ? "#22c55e" : "#333", // Green if any ON
   };
 
   return (
@@ -44,7 +36,7 @@ const outputGHVal = inputGVal && inputHVal ? 1 : 0;
     <Handle
         type="target"
         position={Position.Top}
-        id="Vcc" // <--- IMPORTANT: Unique ID for this specific port
+        id="vcc" // <--- IMPORTANT: Unique ID for this specific port
         style={{ left:"7%", background: "#555" }}
       />     
       <Handle
@@ -54,7 +46,7 @@ const outputGHVal = inputGVal && inputHVal ? 1 : 0;
         style={{ left:"21%", background: "#555" }}
       />
 
-      {/* Input B (Bottom Left) */}
+  
       <Handle
         type="target"
         position={Position.Top}
@@ -81,7 +73,7 @@ const outputGHVal = inputGVal && inputHVal ? 1 : 0;
       />
       <Handle
         type="source"
-        position={Position.top}
+        position={Position.Bottom}
         id="cd" // <--- IMPORTANT: Unique ID for this specific port
         style={{ left: "91%", background: "#555" }}
       />

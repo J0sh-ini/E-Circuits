@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 
 const HelpSection = ({ isOpen, onClose, children }) => {
+  const [page,setPage]=useState(0);
   if (!isOpen) return null;
+  const maxPage=2;
 
   // Define the modal content
   const modalContent = (
@@ -17,7 +19,13 @@ const HelpSection = ({ isOpen, onClose, children }) => {
         alignItems: 'center',
         zIndex: 10001 // High z-index to stay above React Flow
       }}
-    >
+    ><button 
+      onClick={(e)=>{
+      e.stopPropagation();
+      setPage(page-1)
+      }
+      }
+      disabled={page===0}>{"<"}</button>
       <div 
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
         style={{
@@ -25,7 +33,8 @@ const HelpSection = ({ isOpen, onClose, children }) => {
           padding: '24px',
           borderRadius: '12px',
           position: 'relative',
-          width: '400px',
+          width: '600px',
+          height:"600px",
           boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
         }}
       >
@@ -44,7 +53,26 @@ const HelpSection = ({ isOpen, onClose, children }) => {
           ✕
         </button>
         {children}
+       { (page===0)?  (<div><h1>Basics</h1>
+        1)Drag and drop the required gates into the canvas <br></br>
+        2)Inputs are present in the bottom which can be turned on or off by clicking on them<br></br>
+        3)Outputs are given at the top of the circuit ,Complete your circuit and check out how it works<br></br>
+        4)Select unwanted wire or gate and click backspace to remove them</div>) :<></>
+        }       
+         { (page===1)?  (<div><h1>And gate</h1>
+        1)Pin 2,3 input pin 4 output on top <br></br>
+          </div>) :<></>
+          }
+          { (page===2)?  (<div><h1>Or gate</h1>
+        1)gate <br></br>
+          </div>) :<></>
+          }
       </div>
+      <button
+       onClick={(e)=>{
+      e.stopPropagation();
+      setPage(page+1)}}
+      disabled={page===maxPage}>{">"}</button>
     </div>
   );
 

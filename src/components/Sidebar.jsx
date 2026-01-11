@@ -91,7 +91,30 @@ const [isModalOpen, setIsModalOpen] = useState(false);
         >
           NOT Gate
         </div>
-
+          <div
+          className="dndnode"
+          onDragStart={(event) => onDragStart(event, "nandGate")}
+          draggable
+          style={dndStyle}
+        >
+          NAND Gate
+        </div>
+        <div
+          className="dndnode"
+          onDragStart={(event) => onDragStart(event, "norGate")}
+          draggable
+          style={dndStyle}
+        >
+          NOR Gate
+        </div>
+        <div
+          className="dndnode"
+          onDragStart={(event) => onDragStart(event, "xorGate")}
+          draggable
+          style={dndStyle}
+        >
+          XOR Gate
+        </div>
         {/* Help */}
         <div
           className="help"

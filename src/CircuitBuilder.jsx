@@ -18,6 +18,9 @@ import OrGateNode from "./components/gates/orGate";
 import InputNode from "./components/gates/inputComponent";
 import OutputNode from "./components/gates/outputComponent";
 import NotGateNode from "./components/gates/notGate";
+import NandGateNode from "./components/gates/nandGate";
+import NorGateNode from "./components/gates/norGate";
+import XorGateNode from "./components/gates/xorGate";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -56,6 +59,9 @@ export default function CircuitBuilder() {
       andGate: AndGateNode,
       orGate: OrGateNode,
       notGate: NotGateNode,
+      nandGate: NandGateNode,
+      norGate: NorGateNode,
+      xorGate: XorGateNode,
 
       inputNode: InputNode,
       outputNode: OutputNode,
@@ -138,8 +144,8 @@ export default function CircuitBuilder() {
           } else if (edge.sourceHandle === "notf") {
             sourceVal = nodeData?.notf || 0;
           }
-        } else if (sourceNode?.type === "andGate" || sourceNode?.type === "orGate") {
-          // For AND/OR gates, the value depends on which output handle the edge comes from
+        } else if (sourceNode?.type === "andGate" || sourceNode?.type === "orGate" || sourceNode?.type === "nandGate" || sourceNode?.type === "norGate" || sourceNode?.type === "xorGate") {
+          // For AND/OR/NAND/NOR/XOR gates, the value depends on which output handle the edge comes from
           const nodeData = nodeValues.get(edge.source);
           if (edge.sourceHandle === "ab") {
             sourceVal = nodeData?.ab || 0;
@@ -161,7 +167,7 @@ export default function CircuitBuilder() {
         console.log(targetNode);
 
         // Logic for Logic Gates
-        if (targetNode.type === "andGate" || targetNode.type === "orGate") {
+        if (targetNode.type === "andGate" || targetNode.type === "orGate" || targetNode.type === "nandGate" || targetNode.type === "norGate" || targetNode.type === "xorGate") {
           // We need to store inputs "A" and "B" separately for the gate
           // We create a temporary object for this node in our map if it doesn't exist
           if (!nodeValues.has(edge.target + "_inputs")) {
@@ -192,6 +198,21 @@ export default function CircuitBuilder() {
             cd=inputs.c || inputs.d ?1:0;
             ef=inputs.e||inputs.f?1:0;
             gh=inputs.g||inputs.h?1:0;
+          } else if (targetNode.type === "nandGate") {
+            ab = (inputs.a && inputs.b) ? 0 : 1;
+            cd=(inputs.c && inputs.d) ? 0 : 1;
+            ef=(inputs.e&&inputs.f) ? 0 : 1;
+            gh=(inputs.g&&inputs.h) ? 0 : 1;
+          } else if (targetNode.type === "norGate") {
+            ab = (inputs.a || inputs.b) ? 0 : 1;
+            cd=(inputs.c || inputs.d) ? 0 : 1;
+            ef=(inputs.e||inputs.f) ? 0 : 1;
+            gh=(inputs.g||inputs.h) ? 0 : 1;
+          } else if (targetNode.type === "xorGate") {
+            ab = (inputs.a !== inputs.b) ? 1 : 0;
+            cd=(inputs.c !== inputs.d) ? 1 : 0;
+            ef=(inputs.e!==inputs.f) ? 1 : 0;
+            gh=(inputs.g!==inputs.h) ? 1 : 0;
           }
 
           nodeValues.set(edge.target, {output,ab,cd,ef,gh});
@@ -234,18 +255,7 @@ export default function CircuitBuilder() {
     setNodes((nds) =>
       nds.map((node) => {
         // If it's an AND/OR gate, update its internal inputA/inputB data for visualization
-        if (node.type === "andGate") {
-          const outputs = nodeValues.get(node.id) || { ab: 0, cd: 0, ef: 0, gh: 0, output: 0 };
-          // Optimization: Only return new object if data actually changed
-          if (node.data.ab !== outputs.ab || node.data.cd !== outputs.cd || node.data.ef !== outputs.ef || node.data.gh !== outputs.gh) {
-            return {
-              ...node,
-              data: { ...node.data, ab: outputs.ab, cd: outputs.cd, ef: outputs.ef, gh: outputs.gh },
-            };
-          }
-        }
-
-        if (node.type === "orGate") {
+        if (node.type === "andGate" || node.type==='orGate' || node.type==="norGate" || node.type==="nandGate" || node.type==="xorGate" ) {
           const outputs = nodeValues.get(node.id) || { ab: 0, cd: 0, ef: 0, gh: 0, output: 0 };
           // Optimization: Only return new object if data actually changed
           if (node.data.ab !== outputs.ab || node.data.cd !== outputs.cd || node.data.ef !== outputs.ef || node.data.gh !== outputs.gh) {
@@ -263,16 +273,6 @@ export default function CircuitBuilder() {
             return {
               ...node,
               data: { ...node.data, nota: outputs.nota, notb: outputs.notb, notc: outputs.notc, notd: outputs.notd, note: outputs.note, notf: outputs.notf },
-            };
-          }
-        }
-
-        if (node.type === "notGate") {
-          const input = nodeValues.get(node.id + "_input") || { a: 0 };
-          if (node.data.input !== input.a) {
-            return {
-              ...node,
-              data: { ...node.data, input: input.a },
             };
           }
         }

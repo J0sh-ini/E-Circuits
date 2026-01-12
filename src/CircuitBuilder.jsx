@@ -21,7 +21,7 @@ import NotGateNode from "./components/gates/notGate";
 import NandGateNode from "./components/gates/nandGate";
 import NorGateNode from "./components/gates/norGate";
 import XorGateNode from "./components/gates/xorGate";
-
+import './App.css';
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
@@ -117,19 +117,12 @@ export default function CircuitBuilder() {
       }
     });
 
-  
-
-    // 3. Propagate values (Breadth-First approach or Multi-pass)
-    // We loop a few times to ensure signals travel through chains of gates (Input -> AND -> OR -> Output)
-    // In a real app, you would use a Topological Sort, but a loop of 3-5 is fine for small circuits.
     for (let i = 0; i < 5; i++) {
       edges.forEach((edge) => {
-        // Get source value - handle gates that have multiple outputs
         let sourceVal = 0;
         const sourceNode = nodes.find((n) => n.id === edge.source);
         
         if (sourceNode?.type === "notGate") {
-          // For NOT gates, the value depends on which output handle the edge comes from
           const nodeData = nodeValues.get(edge.source);
           if (edge.sourceHandle === "nota") {
             sourceVal = nodeData?.nota || 0;
@@ -145,7 +138,6 @@ export default function CircuitBuilder() {
             sourceVal = nodeData?.notf || 0;
           }
         } else if (sourceNode?.type === "andGate" || sourceNode?.type === "orGate" || sourceNode?.type === "nandGate" || sourceNode?.type === "norGate" || sourceNode?.type === "xorGate") {
-          // For AND/OR/NAND/NOR/XOR gates, the value depends on which output handle the edge comes from
           const nodeData = nodeValues.get(edge.source);
           if (edge.sourceHandle === "ab") {
             sourceVal = nodeData?.ab || 0;
@@ -160,23 +152,19 @@ export default function CircuitBuilder() {
           sourceVal = nodeValues.get(edge.source) || 0;
         }
 
-        // Find the target node in our nodes array to know its type
         const targetNode = nodes.find((n) => n.id === edge.target);
         if (!targetNode) return;
         console.log(i + edge.source + " " + edge.target);
         console.log(targetNode);
 
-        // Logic for Logic Gates
         if (targetNode.type === "andGate" || targetNode.type === "orGate" || targetNode.type === "nandGate" || targetNode.type === "norGate" || targetNode.type === "xorGate") {
-          // We need to store inputs "A" and "B" separately for the gate
-          // We create a temporary object for this node in our map if it doesn't exist
+        
           if (!nodeValues.has(edge.target + "_inputs")) {
             nodeValues.set(edge.target + "_inputs", { a: 0, b: 0 ,c:0,d:0,e:0,f:0,g:0,h:0,ab:0,cd:0,ef:0,gh:0});
           }
 
           const inputs = nodeValues.get(edge.target + "_inputs");
 
-          // Assign value based on which handle was connected (id="a" or id="b")
           if (edge.targetHandle === "a") inputs.a = sourceVal;
           if (edge.targetHandle === "b") inputs.b = sourceVal;
           if (edge.targetHandle === "c") inputs.c = sourceVal;
@@ -186,7 +174,6 @@ export default function CircuitBuilder() {
           if (edge.targetHandle === "g") inputs.g = sourceVal;
           if (edge.targetHandle === "h") inputs.h = sourceVal;
 
-          // Calculate Gate Output
           let ab,cd,ef,gh,output = 0;
           if (targetNode.type === "andGate") {
             ab = inputs.a && inputs.b ? 1 : 0;
@@ -219,13 +206,10 @@ export default function CircuitBuilder() {
         }
 
         if (targetNode.type === "notGate") {
-          // Similar to andGate and orGate, store 6 inputs
           if (!nodeValues.has(edge.target + "_inputs")) {
             nodeValues.set(edge.target + "_inputs", { a: 0, b: 0, c: 0, d: 0, e: 0, f: 0 });
           }
           const inputs = nodeValues.get(edge.target + "_inputs");
-
-          // Assign value based on which handle was connected
           if (edge.targetHandle === "a") inputs.a = sourceVal;
           if (edge.targetHandle === "b") inputs.b = sourceVal;
           if (edge.targetHandle === "c") inputs.c = sourceVal;
@@ -233,7 +217,6 @@ export default function CircuitBuilder() {
           if (edge.targetHandle === "e") inputs.e = sourceVal;
           if (edge.targetHandle === "f") inputs.f = sourceVal;
 
-          // Calculate NOT outputs
           const nota = inputs.a ? 0 : 1;
           const notb = inputs.b ? 0 : 1;
           const notc = inputs.c ? 0 : 1;
@@ -244,20 +227,17 @@ export default function CircuitBuilder() {
           nodeValues.set(edge.target, { nota, notb, notc, notd, note, notf });
         }
 
-        // Logic for Final Output Nodes
         if (targetNode.type === "outputNode") {
           nodeValues.set(edge.target, sourceVal);
         }
       });
     }
 
-    // 4. Update the React Flow nodes with the new calculated data
     setNodes((nds) =>
       nds.map((node) => {
-        // If it's an AND/OR gate, update its internal inputA/inputB data for visualization
         if (node.type === "andGate" || node.type==='orGate' || node.type==="norGate" || node.type==="nandGate" || node.type==="xorGate" ) {
           const outputs = nodeValues.get(node.id) || { ab: 0, cd: 0, ef: 0, gh: 0, output: 0 };
-          // Optimization: Only return new object if data actually changed
+      
           if (node.data.ab !== outputs.ab || node.data.cd !== outputs.cd || node.data.ef !== outputs.ef || node.data.gh !== outputs.gh) {
             return {
               ...node,
@@ -268,7 +248,6 @@ export default function CircuitBuilder() {
 
         if (node.type === "notGate") {
           const outputs = nodeValues.get(node.id) || { nota: 0, notb: 0, notc: 0, notd: 0, note: 0, notf: 0 };
-          // Optimization: Only return new object if data actually changed
           if (node.data.nota !== outputs.nota || node.data.notb !== outputs.notb || node.data.notc !== outputs.notc || node.data.notd !== outputs.notd || node.data.note !== outputs.note || node.data.notf !== outputs.notf) {
             return {
               ...node,
@@ -276,8 +255,6 @@ export default function CircuitBuilder() {
             };
           }
         }
-
-        // If it's an Output Node, update its 'isLit' status
         if (node.type === "outputNode") {
           const val = nodeValues.get(node.id) || 0;
           if (node.data.inputVal !== val) {
@@ -291,29 +268,34 @@ export default function CircuitBuilder() {
     
 
   }, [edges, nodes.length, JSON.stringify(nodes.map((n) => n.data.value))]);
-  // Dependency Note: We trigger this when edges change, node count changes,
-  // or when an INPUT node's value changes.
   function toggleSidebar()
   {
     setSideBar(!sideBar);
   }
+  
+  function clearAllNodes()
+  {
+    setNodes(initialNodes);
+    setEdges([]);
+  }
+  
   return (
-    <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
+    <div className="main-div">
       <button 
       onClick={toggleSidebar} 
-      style={
-        {height: "50px",
-        background: "#1a1a1a",
-        border:"none",
-        position: "absolute",
-        zIndex:10000}}>
-        <img src={sideBarIcon} style={{height: "30px"}}></img>
-        </button>
+      className="sideBar-button">
+        <img src={sideBarIcon} style={{height: "1.875rem"}}></img>
+      </button>
+      <button
+        onClick={clearAllNodes}
+        className="clearAll-button"
+      >
+        Clear All
+      </button>
       {sideBar && <Sidebar />}
       <div
         className="reactflow-wrapper"
         ref={reactFlowWrapper}
-        style={{ width: "100%", height: "100%" }}
       >
         <ReactFlow
           nodes={nodes}
@@ -321,55 +303,20 @@ export default function CircuitBuilder() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          // onEdgeDoubleClick={onEdgeDoubleClick}
-          // onNodeDragStart={onNodeDragStart}
-          // onNodeDrag={onNodeDrag}
-          // onNodeDragStop={onNodeDragStop}
           onDragOver={onDragOver}
           onDrop={onDrop}
           nodeTypes={nodeTypes}
           fitView
-          colorMode="dark"
           panOnDrag={false}
           zoomOnScroll={false}
           zoomOnPinch={false}
           zoomOnDoubleClick={false}
         >
           <Controls />
-        { /* <MiniMap position="Top-right"/>*/}
-          <Background color="#000000ff" gap={12} size={1} />
+        
+          <Background  />
         </ReactFlow>
-        {/* Dustbin — appears while dragging a node *
-        <div
-          ref={dustbinRef}
-          aria-hidden
-          style={{
-            position: "absolute",
-            right: 24,
-            bottom: 24,
-            width: 72,
-            height: 72,
-            borderRadius: 10,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: overDustbin ? "#ffe6e6" : "rgba(0,0,0,0.06)",
-            boxShadow: overDustbin ? "0 6px 16px rgba(255,0,0,0.15)" : "0 6px 18px rgba(0,0,0,0.08)",
-            transition: "background .12s, transform .12s",
-            transform: overDustbin ? "scale(1.06)" : "scale(1)",
-            zIndex: 9999,
-            pointerEvents: isDraggingNode ? "auto" : "none",
-          }}
-          title={isDraggingNode ? "Drop here to delete node" : ""}
-        >
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 6h18" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round"/>
-            <path d="M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M10 11v5" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round"/>
-            <path d="M14 11v5" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round"/>
-            <path d="M9 6l1-2h4l1 2" stroke={overDustbin ? '#c00' : '#333'} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>*/}
+      
       </div>
     </div>
   );

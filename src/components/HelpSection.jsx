@@ -30,24 +30,24 @@ const HelpSection = ({ isOpen, onClose, children }) => {
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
         style={{
           background: 'white',
-          padding: '24px',
-          borderRadius: '12px',
+          padding: '1.5rem',
+          borderRadius: '0.75rem',
           position: 'relative',
-          width: '600px',
-          height:"600px",
-          boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+          width: '37.5rem',
+          height:"37.5rem",
+          boxShadow: '0 0.625rem 1.56rem rgba(0,0,0,0.2)'
         }}
       >
         <button 
           onClick={onClose}
           style={{
             position: 'absolute',
-            top: '12px',
-            right: '12px',
+            top: '0.75rem',
+            right: '0.75rem',
             cursor: 'pointer',
             border: 'none',
             background: 'none',
-            fontSize: '18px'
+            fontSize: '1.125rem'
           }}
         >
           ✕

@@ -2,7 +2,7 @@
 import React from "react";
 import HelpSection from "./HelpSection";
 import { useState } from "react";
-
+import './styles.css';
 
 export default function Sidebar() {
   const onDragStart = (event, nodeType) => {
@@ -14,7 +14,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <aside
       style={{
-        width: "200px",
+        width: "12.5rem",
         background: "#6c6c6c",
       }}
     >
@@ -26,14 +26,14 @@ const [isModalOpen, setIsModalOpen] = useState(false);
           background: "#1a1a1a",
           color: "#a4a4a4",
           margin: "0",
-          padding: "50px 10px 10px 10px",
+          padding: "3.125rem 0.625rem 0.625rem 0.625rem",
           
         }}
       > Simple Circuit Designer
       </h3>
       <div
         style={{
-          padding: "15px",
+          padding: "0.93rem",
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-start",
@@ -67,7 +67,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
           className="dndnode"
           onDragStart={(event) => onDragStart(event, "andGate")}
           draggable
-          style={dndStyle}
+         
         >
           AND Gate
         </div>
@@ -77,7 +77,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
           className="dndnode"
           onDragStart={(event) => onDragStart(event, "orGate")}
           draggable
-          style={dndStyle}
+         
         >
           OR Gate
         </div>
@@ -87,7 +87,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
           className="dndnode"
           onDragStart={(event) => onDragStart(event, "notGate")}
           draggable
-          style={dndStyle}
+         
         >
           NOT Gate
         </div>
@@ -95,7 +95,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
           className="dndnode"
           onDragStart={(event) => onDragStart(event, "nandGate")}
           draggable
-          style={dndStyle}
+    
         >
           NAND Gate
         </div>
@@ -103,7 +103,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
           className="dndnode"
           onDragStart={(event) => onDragStart(event, "norGate")}
           draggable
-          style={dndStyle}
+          
         >
           NOR Gate
         </div>
@@ -111,14 +111,13 @@ const [isModalOpen, setIsModalOpen] = useState(false);
           className="dndnode"
           onDragStart={(event) => onDragStart(event, "xorGate")}
           draggable
-          style={dndStyle}
+          
         >
           XOR Gate
         </div>
-        {/* Help */}
         <div
-          className="help"
-          style={{ ...dndStyle, cursor: "pointer", marginTop: "auto" }}
+          className="help dndnode"
+          style={{marginTop:'auto',cursor:'pointer'}}
           onClick={()=>{setIsModalOpen(true)}}
         >
           Help
@@ -128,16 +127,3 @@ const [isModalOpen, setIsModalOpen] = useState(false);
   );
 }
 
-// Simple styling for the draggable items
-const dndStyle = {
-  height: "40px",
-  border: "1px solid #333",
-  borderRadius: "5px",
-  padding: "5px",
-  marginBottom: "10px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  cursor: "grab",
-  backgroundColor: "#a8a8a8ff",
-};

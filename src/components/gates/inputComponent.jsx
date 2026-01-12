@@ -12,16 +12,16 @@ const InputNode = ({ id, data }) => {
   };
 
   const style = {
-    padding: "10px",
+    padding: "0.625rem",
     border: "1px solid #000000ff",
     borderRadius: "50%",
     background: "#9d9d9dff",
     display: "flex",
     alignItems: "center",
     justifyContent:"center",
-    height:"30px",
-    width:"30px",
-     boxShadow: isOn ? "0 0 20px #fb2424ff" : "none",
+    height:"1.875rem",
+    width:"1.875rem",
+     boxShadow: isOn ? "0 0 1.25rem #fb2424ff" : "none",
       transition: "all 0.3s ease",
   };
 
@@ -34,9 +34,9 @@ const InputNode = ({ id, data }) => {
         onClick={toggleSwitch}
         style={{
           cursor: "pointer",
-         // padding: "10px",
-          height:"25px",
-          width:"25px",
+         // padding: "0.625rem",
+          height:"1.56rem",
+          width:"1.56rem",
           background: isOn ? "#9d0000ff" : "#ccc", // Green if ON
           color: "white",
           borderRadius: "50%",

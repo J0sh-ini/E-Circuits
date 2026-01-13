@@ -2,6 +2,8 @@
 .dndnode{
     
     height: 2.5rem;
+    min-height: 2.5rem;
+    flex-shrink: 0;
     border: 1px solid #333;
     border-radius: 0.312rem;
     padding: 0.312rem;
@@ -17,4 +19,23 @@
 
     width: 6rem;
 }
+
+/* Scrollbar styling for sidebar */
+div::-webkit-scrollbar {
+    width: 0.5rem;
+}
+
+div::-webkit-scrollbar-track {
+    background: #6c6c6c;
+}
+
+div::-webkit-scrollbar-thumb {
+    background: #4a4a4a;
+    border-radius: 0.25rem;
+}
+
+div::-webkit-scrollbar-thumb:hover {
+    background: #5a5a5a;
+}
+
 

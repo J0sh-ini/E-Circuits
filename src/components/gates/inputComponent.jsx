@@ -26,12 +26,14 @@ const InputNode = ({ id, data }) => {
   };
 
   return (
-    <div style={style}>
+    <div style={style}
+     onClick={toggleSwitch}
+    >
       
 
       {/* The Toggle Switch UI */}
       <div
-        onClick={toggleSwitch}
+       
         style={{
           cursor: "pointer",
          // padding: "0.625rem",
@@ -50,7 +52,7 @@ const InputNode = ({ id, data }) => {
       <Handle
         type="source"
         position={Position.Top}
-        style={{ background: "#555" }}
+        style={{ background: "#00000000",borderColor:'#00000000',height:'3rem', width:'3rem ',top:'50%' }}
       />
     </div>
   );

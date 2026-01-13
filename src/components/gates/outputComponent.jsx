@@ -34,7 +34,7 @@ const OutputNode = ({ data }) => {
       <Handle
         type="target"
         position={Position.Bottom}
-        style={{ background: "#555" }}
+        style={{ background: "#00000000",borderColor:'#00000000',height:'3rem', width:'3rem ',bottom:'50%' }}
       />
 
       {/* Visual Bulb */}

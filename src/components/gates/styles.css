@@ -12,7 +12,9 @@
     display:block;
 }
 .handleStyle
-{
+{   
+    height:0.8rem;
+    width:0.8rem;
     background: #00000000 ;
     border-color:#00000000; 
 }

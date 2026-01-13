@@ -20,9 +20,9 @@ const NorGateNode = () => {
         className="handleStyle top one"
       />     
       <Handle
-        type="target"
+        type="source"
         position={Position.Top}
-        id="a" 
+        id="ab" 
         className="handleStyle top two"
       />
 
@@ -30,37 +30,37 @@ const NorGateNode = () => {
       <Handle
         type="target"
         position={Position.Top}
-        id="b" 
+        id="a" 
         className="handleStyle top three"
-      />
-      <Handle
-        type="source"
-        position={Position.Top}
-        id="ab"
-        className="handleStyle top four"
       />
       <Handle
         type="target"
         position={Position.Top}
-        id="c"
+        id="b"
+        className="handleStyle top four"
+      />
+      <Handle
+        type="source"
+        position={Position.Top}
+        id="cd"
         className="handleStyle top five"
       />
       <Handle
         type="target"
         position={Position.Top}
-        id="d" 
+        id="c" 
         className="handleStyle top six"
       />
       <Handle
-        type="source"
+        type="target"
         position={Position.Top}
-        id="cd"     
+        id="d"     
         className="handleStyle top seven"
       />
       <Handle
-        type="target"
+        type="source"
         position={Position.Bottom}
-        id="e" 
+        id="ef" 
         className="handleStyle bottom one"
       />     
       <Handle
@@ -70,15 +70,15 @@ const NorGateNode = () => {
         className="handleStyle bottom two"
       />
       <Handle
-        type="source"
+        type="target"
         position={Position.Bottom}
-        id="ef"
+        id="e"
         className="handleStyle bottom three"
       />
       <Handle
-        type="target"
+        type="source"
         position={Position.Bottom}
-        id="g"
+        id="gh"
         className="handleStyle bottom four"
       />
       <Handle
@@ -88,9 +88,9 @@ const NorGateNode = () => {
         className="handleStyle bottom five"
       />
       <Handle
-        type="source"
+        type="target"
         position={Position.Bottom}
-        id="gh" 
+        id="g" 
         className="handleStyle bottom six"
       />
       <Handle

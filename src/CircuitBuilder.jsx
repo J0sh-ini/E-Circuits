@@ -13,15 +13,21 @@ import "@xyflow/react/dist/style.css";
 import sideBarIcon from "./images/sideMenuIcon.png"
 import Sidebar from "./components/Sidebar";
 import AndGateNode from "./components/gates/andGate";
+import AndGateNode3 from "./components/gates/andgate3";
 import OrGateNode from "./components/gates/orGate";
-import InputNode from "./components/gates/inputComponent";
-import OutputNode from "./components/gates/outputComponent";
+import OrGateNode3 from "./components/gates/orGate3";
 import NotGateNode from "./components/gates/notGate";
 import NandGateNode from "./components/gates/nandGate";
+import NandGateNode3 from "./components/gates/nandGate3";
 import NorGateNode from "./components/gates/norGate";
+import NorGateNode3 from "./components/gates/norGate3";
 import XorGateNode from "./components/gates/xorGate";
+import XorGateNode3 from "./components/gates/xorGate3";
+import InputNode from "./components/gates/inputComponent";
+import OutputNode from "./components/gates/outputComponent";
 import PowerNode from "./components/gates/powerNode";
 import './App.css';
+
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
@@ -75,14 +81,19 @@ export default function CircuitBuilder() {
   const nodeTypes = useMemo(
     () => ({
       andGate: AndGateNode,
+      andGate3: AndGateNode3,
       orGate: OrGateNode,
+      orGate3: OrGateNode3,
       notGate: NotGateNode,
       nandGate: NandGateNode,
+      nandGate3: NandGateNode3,
       norGate: NorGateNode,
+      norGate3: NorGateNode3,
       xorGate: XorGateNode,
+      xorGate3: XorGateNode3,
       powerNode: PowerNode,
       inputNode: InputNode,
-      outputNode: OutputNode,
+      outputNode: OutputNode,      
     }),
     []
   );
@@ -126,12 +137,31 @@ export default function CircuitBuilder() {
   const spawnNode = useCallback(
     (nodeType) => {
       // Spawn node at a default center position
-      const newNode = {
+      let newNode;
+      if(nodeType === "andGate" || nodeType === "orGate" || nodeType === "norGate" || nodeType === "nandGate" ||nodeType === "xorGate" ) {
+        newNode = {
         id: getId(),
         type: nodeType,
         position: { x: 300, y: 250 },
-        data: { label: `${nodeType} node`, vcc:0,a:0,b:0,ab:0,c:0,d:0,cd:0,e:0,f:0,ef:0,g:0,h:0,gnd:0,value:0}, 
-      };
+        data: { label: `${nodeType} node`, vcc:0,a:0,b:0,ab:0,c:0,d:0,cd:0,e:0,f:0,ef:0,g:0,h:0,gh:0,gnd:0,value:0}, 
+        };
+      }
+      else if(nodeType === "andGate3" || nodeType === "orGate3" || nodeType === "norGate3" || nodeType === "nandGate3" ||nodeType === "xorGate3" ) {
+        newNode = {
+        id: getId(),
+        type: nodeType,
+        position: { x: 300, y: 250 },
+        data: { label: `${nodeType} node`, vcc:0,a:0,b:0,c:0,abc:0,d:0,e:0,f:0,def:0,g:0,h:0,i:0,ghi:0,gnd:0,value:0}, 
+        };
+      }
+      else  {
+        newNode = {
+        id: getId(),
+        type: nodeType,
+        position: { x: 300, y: 250 },
+        data: { label: `${nodeType} node`, vcc:0,a:0,nota:0,b:0,notb:0,c:0,notc:0,d:0,notd:0,e:0,note:0,f:0,notf:0,gnd:0,value:0}, 
+        };
+      }
       setNodes((nds) => nds.concat(newNode));
     },
     [setNodes]
@@ -192,7 +222,17 @@ export default function CircuitBuilder() {
           } else if (edge.sourceHandle === "gh") {
             sourceVal = nodeData?.gh || 0;
           }
-        } else {
+        } 
+        else if (sourceNode?.type === "andGate3" || sourceNode?.type === "orGate3" || sourceNode?.type === "nandGate3" || sourceNode?.type === "norGate3" || sourceNode?.type === "xorGate3") {
+          const nodeData = nodeValues.get(edge.source);
+          if (edge.sourceHandle === "abc") {
+            sourceVal = nodeData?.abc || 0;
+          } else if (edge.sourceHandle === "def") {
+            sourceVal = nodeData?.def || 0;
+          } else if (edge.sourceHandle === "ghi") {
+            sourceVal = nodeData?.ghi || 0;
+          }
+        }else {
           sourceVal = nodeValues.get(edge.source) || 0;
         }
 
@@ -255,7 +295,54 @@ export default function CircuitBuilder() {
 
           nodeValues.set(edge.target, {output,ab,cd,ef,gh});
         }
+        if (targetNode.type === "andGate3" || targetNode.type === "orGate3" || targetNode.type === "nandGate3" || targetNode.type === "norGate3" || targetNode.type === "xorGate3") {
+          const hasPower = hasVccAndGnd(edge.target, edges);
+          
+          if (!nodeValues.has(edge.target + "_inputs")) {
+            nodeValues.set(edge.target + "_inputs", { a:0,b:0,c:0,d:0,e:0,f:0,g:0,h:0,i:0,abc:0,def:0,ghi:0});
+          }
 
+          const inputs = nodeValues.get(edge.target + "_inputs");
+
+          if (edge.targetHandle === "a") inputs.a = sourceVal;
+          if (edge.targetHandle === "b") inputs.b = sourceVal;
+          if (edge.targetHandle === "c") inputs.c = sourceVal;
+          if (edge.targetHandle === "d") inputs.d = sourceVal;
+          if (edge.targetHandle === "e") inputs.e = sourceVal;
+          if (edge.targetHandle === "f") inputs.f = sourceVal;
+          if (edge.targetHandle === "g") inputs.g = sourceVal;
+          if (edge.targetHandle === "h") inputs.h = sourceVal;
+          if (edge.targetHandle === "i") inputs.i = sourceVal;
+
+          let abc,def,ghi,output = 0;
+          
+          // Only compute outputs if gate has power connections
+          if (hasPower) {
+            if (targetNode.type === "andGate3") {
+              abc = inputs.a && inputs.b && inputs.c ? 1 : 0;
+              def = inputs.d && inputs.e && inputs.f ? 1 : 0;
+              ghi = inputs.g && inputs.h && inputs.i ? 1 : 0;
+            } else if (targetNode.type === "orGate3") {
+              abc = inputs.a || inputs.b || inputs.c ? 1 : 0;
+              def = inputs.d || inputs.e || inputs.f ? 1 : 0;
+              ghi = inputs.g || inputs.h || inputs.i ? 1 : 0;
+            } else if (targetNode.type === "nandGate3") {
+              abc = inputs.a && inputs.b && inputs.c ? 0 : 1;
+              def = inputs.d && inputs.e && inputs.f ? 0 : 1;
+              ghi = inputs.g && inputs.h && inputs.i ? 0 : 1;
+            } else if (targetNode.type === "norGate3") {
+              abc = inputs.a || inputs.b || inputs.c ? 0 : 1;
+              def = inputs.d || inputs.e || inputs.f ? 0 : 1;
+              ghi = inputs.g || inputs.h || inputs.i ? 0 : 1;
+            } else if (targetNode.type === "xorGate3") {
+              abc = (inputs.a !== inputs.b ? 1 : 0 ) !== inputs.c ? 1 : 0;
+              def = (inputs.d !== inputs.e ? 1 : 0 ) !== inputs.f ? 1 : 0;
+              ghi = (inputs.g !== inputs.h ? 1 : 0 ) !== inputs.i ? 1 : 0;
+            }
+          }
+
+          nodeValues.set(edge.target, {output,abc,def,ghi});
+        }
         if (targetNode.type === "notGate") {
           // Check if gate has both VCC and GND connected
           const hasPower = hasVccAndGnd(edge.target, edges);
@@ -304,7 +391,16 @@ export default function CircuitBuilder() {
             };
           }
         }
-
+        if (node.type === "andGate3" || node.type==='orGate3' || node.type==="norGate3" || node.type==="nandGate3" || node.type==="xorGate3" ) {
+          const outputs = nodeValues.get(node.id) || { abc: 0,def: 0, ghi: 0, output: 0 };
+      
+          if (node.data.abc !== outputs.abc || node.data.def !== outputs.def || node.data.ghi !== outputs.ghi) {
+            return {
+              ...node,
+              data: { ...node.data, abc: outputs.abc, def: outputs.def, ghi: outputs.ghi },
+            };
+          }
+        }
         if (node.type === "notGate") {
           const outputs = nodeValues.get(node.id) || { nota: 0, notb: 0, notc: 0, notd: 0, note: 0, notf: 0 };
           if (node.data.nota !== outputs.nota || node.data.notb !== outputs.notb || node.data.notc !== outputs.notc || node.data.notd !== outputs.notd || node.data.note !== outputs.note || node.data.notf !== outputs.notf) {

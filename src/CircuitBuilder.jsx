@@ -25,7 +25,7 @@ const getId = () => `dndnode_${id++}`;
 const initialNodes =[];
 for(let i=1;i<9;i++)
 {
-  initialNodes.push({
+      initialNodes.push({
         id: "ip"+String(i),
         type:'inputNode',
         position:{x:100+(100*i),y:500},

@@ -19,17 +19,17 @@ const AndGateNode = ({ data }) => {
   // We expect the main app to pass the current state in the data object
   const inputAVal = data.pin2 || 0;
   const inputBVal = data.pin3 || 0;
-   const inputCVal = data.pin5 || 0;
+  const inputCVal = data.pin5 || 0;
   const inputDVal = data.pin6 || 0;
-   const inputEVal = data.pin8 || 0;
+  const inputEVal = data.pin8 || 0;
   const inputFVal = data.pin9 || 0;
   const inputGVal = data.pin11 || 0;
   const inputHVal = data.pin12 || 0;
   // Logic is technically calculated elsewhere, but we visualize it here
   const outputABVal = inputAVal && inputBVal ? 1 : 0;
-const outputCDVal = inputCVal && inputDVal ? 1 : 0;
-const outputEFVal = inputEVal && inputFVal ? 1 : 0;
-const outputGHVal = inputGVal && inputHVal ? 1 : 0;
+  const outputCDVal = inputCVal && inputDVal ? 1 : 0;
+  const outputEFVal = inputEVal && inputFVal ? 1 : 0;
+  const outputGHVal = inputGVal && inputHVal ? 1 : 0;
   // Change border color if output is ON
   const dynamicStyle = {
     ...nodeStyle,
@@ -41,7 +41,7 @@ const outputGHVal = inputGVal && inputHVal ? 1 : 0;
       {/* --- INPUT HANDLES (Left Side) --- */}
 
       {/* Input A (Top Left) */}
-    <Handle
+      <Handle
         type="target"
         position={Position.Top}
         id="Vcc" // <--- IMPORTANT: Unique ID for this specific port
@@ -53,7 +53,6 @@ const outputGHVal = inputGVal && inputHVal ? 1 : 0;
         id="a" // <--- IMPORTANT: Unique ID for this specific port
         style={{ left:"21%", background: "#555" }}
       />
-
       {/* Input B (Bottom Left) */}
       <Handle
         type="target"

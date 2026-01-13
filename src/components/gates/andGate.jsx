@@ -1,6 +1,8 @@
 // src/nodes/AndGateNode.jsx
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import gateImg from "../../images/ic_images(1).png"
+import './styles.css';
 
 // Basic CSS styling for the node look
 const nodeStyle = {
@@ -36,6 +38,7 @@ const AndGateNode = ({ data }) => {
     borderColor: outputABVal === 1 ? "#22c55e" : "#333", // Green if ON
   };
 
+  
   return (
     <div style={dynamicStyle}>
       {/* --- INPUT HANDLES (Left Side) --- */}
@@ -44,102 +47,90 @@ const AndGateNode = ({ data }) => {
       <Handle
         type="target"
         position={Position.Top}
-        id="Vcc" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left:"7%", background: "#555" }}
+        id="vcc" 
+        className="handleStyle top one"
       />     
       <Handle
         type="target"
         position={Position.Top}
-        id="a" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left:"21%", background: "#555" }}
+        id="a" 
+        className="handleStyle top two"
       />
       {/* Input B (Bottom Left) */}
       <Handle
         type="target"
         position={Position.Top}
-        id="b" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left: "35%", background: "#555" }}
+        id="b" 
+        className="handleStyle top three"
       />
       <Handle
         type="source"
         position={Position.Top}
         id="ab"
-        style={{ left: "49%",background: "#555" }}
+        className="handleStyle top four"
       />
       <Handle
         type="target"
         position={Position.Top}
-        id="c" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left: "63%", background: "#555" }}
+        id="c"
+        className="handleStyle top five"
       />
       <Handle
         type="target"
         position={Position.Top}
-        id="d" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left: "77%", background: "#555" }}
+        id="d" 
+        className="handleStyle top six"
       />
       <Handle
         type="source"
-        position={Position.top}
-        id="cd" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left: "91%", background: "#555" }}
+        position={Position.Top}
+        id="cd"     
+        className="handleStyle top seven"
       />
       <Handle
         type="target"
         position={Position.Bottom}
-        id="e" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left:"7%", background: "#555" }}
+        id="e" 
+        className="handleStyle bottom one"
       />     
       <Handle
         type="target"
         position={Position.Bottom}
-        id="f" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left:"21%", background: "#555" }}
+        id="f" 
+        className="handleStyle bottom two"
       />
-
-      {/* Input B (Bottom Left) */}
       <Handle
         type="source"
         position={Position.Bottom}
-        id="ef" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left: "35%", background: "#555" }}
+        id="ef"
+        className="handleStyle bottom three"
       />
       <Handle
         type="target"
         position={Position.Bottom}
         id="g"
-        style={{ left: "49%",background: "#555" }}
+        className="handleStyle bottom four"
       />
       <Handle
         type="target"
         position={Position.Bottom}
-        id="h" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left: "63%", background: "#555" }}
+        id="h" 
+        className="handleStyle bottom five"
       />
       <Handle
         type="source"
         position={Position.Bottom}
-        id="gh" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left: "77%", background: "#555" }}
+        id="gh" 
+        className="handleStyle bottom six"
       />
       <Handle
         type="target"
         position={Position.Bottom}
-        id="gnd" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ left: "91%", background: "#555" }}
+        id="gnd" 
+        className="handleStyle bottom seven"
       />
-
-      {/* --- NODE CONTENT --- */}
-      <div>AND</div>
-      {/* Optional: Visualizing current state for debugging */}
-      <div style={{ fontSize: "0.7em", marginTop: "5px", color: "#666" }}>
-        IC 7408
-      </div>
-
-      {/* --- OUTPUT HANDLE (Right Side) --- */}
-      {/* We only have one output, so an ID isn't strictly necessary here */}
-      
     </div>
+    
   );
 };
 

@@ -1,68 +1,106 @@
-// src/nodes/AndGateNode.jsx
+// src/nodes/OrGateNode.jsx
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import gateImg from "../../images/ic_images(1).png"
+import './styles.css';
 
-// Basic CSS styling for the node look
-const nodeStyle = {
-  padding: "15px",
-  borderRadius: "5px 15px 15px 5px",
-  border: "2px solid #333",
-  backgroundColor: "#9d9d9dff",
-  textAlign: "center",
-  minWidth: "60px",
-  fontWeight: "bold",
-};
 
-const OrGateNode = ({ data }) => {
-  // We expect the main app to pass the current state in the data object
-  const inputAVal = data.inputA || 0;
-  const inputBVal = data.inputB || 0;
-  // Logic is technically calculated elsewhere, but we visualize it here
-  const outputVal = inputAVal || inputBVal ? 1 : 0;
-
-  // Change border color if output is ON
-  const dynamicStyle = {
-    ...nodeStyle,
-    borderColor: outputVal === 1 ? "#22c55e" : "#333", // Green if ON
-  };
-
+const OrGateNode = () => {
+  
   return (
-    <div style={dynamicStyle}>
-      {/* --- INPUT HANDLES (Left Side) --- */}
-
-      {/* Input A (Top Left) */}
+    
+    
+    <div >
+    <img src={gateImg} className='icImg'/> 
+    <div className="icName">IC7432</div>
+    <Handle
+        type="target"
+        position={Position.Top}
+        id="vcc" 
+        className="handleStyle top one"
+      />     
       <Handle
         type="target"
-        position={Position.Left}
-        id="a" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ top: "30%", background: "#555" }}
+        position={Position.Top}
+        id="a" 
+        className="handleStyle top two"
       />
 
-      {/* Input B (Bottom Left) */}
+  
       <Handle
         type="target"
-        position={Position.Left}
-        id="b" // <--- IMPORTANT: Unique ID for this specific port
-        style={{ top: "70%", background: "#555" }}
+        position={Position.Top}
+        id="b" 
+        className="handleStyle top three"
       />
-
-      {/* --- NODE CONTENT --- */}
-      <div>OR</div>
-      {/* Optional: Visualizing current state for debugging */}
-      <div style={{ fontSize: "0.7em", marginTop: "5px", color: "#666" }}>
-        In: {inputAVal},{inputBVal}
-        <br />
-        Out: <strong>{outputVal}</strong>
-      </div>
-
-      {/* --- OUTPUT HANDLE (Right Side) --- */}
-      {/* We only have one output, so an ID isn't strictly necessary here */}
       <Handle
         type="source"
-        position={Position.Right}
-        style={{ background: "#555" }}
+        position={Position.Top}
+        id="ab"
+        className="handleStyle top four"
+      />
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="c"
+        className="handleStyle top five"
+      />
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="d" 
+        className="handleStyle top six"
+      />
+      <Handle
+        type="source"
+        position={Position.Top}
+        id="cd"     
+        className="handleStyle top seven"
+      />
+      <Handle
+        type="target"
+        position={Position.Bottom}
+        id="e" 
+        className="handleStyle bottom one"
+      />     
+      <Handle
+        type="target"
+        position={Position.Bottom}
+        id="f" 
+        className="handleStyle bottom two"
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="ef"
+        className="handleStyle bottom three"
+      />
+      <Handle
+        type="target"
+        position={Position.Bottom}
+        id="g"
+        className="handleStyle bottom four"
+      />
+      <Handle
+        type="target"
+        position={Position.Bottom}
+        id="h" 
+        className="handleStyle bottom five"
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="gh" 
+        className="handleStyle bottom six"
+      />
+      <Handle
+        type="target"
+        position={Position.Bottom}
+        id="gnd" 
+        className="handleStyle bottom seven"
       />
     </div>
+    
   );
 };
 

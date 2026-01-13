@@ -1,0 +1,49 @@
+
+.icName{
+    font-family: 'Times New Roman', Times, serif;
+    position:absolute;
+    left:60%;
+    bottom:50%;
+    color:#756b53;
+}
+.icImg{
+    height:5rem;
+    width:11.25rem;
+    display:block;
+}
+.handleStyle
+{   
+    height:0.8rem;
+    width:0.8rem;
+    background: #00000000 ;
+    border-color:#00000000; 
+}
+
+.top{
+    top:9%
+}
+.bottom{
+    bottom: 9%;
+}
+.one
+{
+    left:7%;
+}
+.two{
+    left:21%
+}
+.three{
+    left:35%;
+}
+.four{
+    left:49%;
+}
+.five{
+    left:63%;
+}
+.six{
+    left:77%;
+}
+.seven{
+    left:90%;
+}

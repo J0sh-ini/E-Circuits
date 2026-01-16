@@ -1,18 +1,49 @@
-# React + Vite
+# E-Circuits
+![E-Circuits icon](./src/images/icon.png)
+<!-- <img src="./src/images/icon.png" style="height:50px"> -->
+An android and a web application that allows you to learn and simulate very basic digital circuits and concepts of digital electronics.
+The app provides you with various Integrated Circuits of logic gates which one can use to practice and understand the core logic behind our modern digital world.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The Help section within the app guides the user through the workings of the app.
 
-Currently, two official plugins are available:
+E-Circuits contains 2 inputs and 3 inputs :
+- AND gate 
+- OR gate
+- NOT gate
+- NAND gate
+- NOR gate
+- XOR gate
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Double tap on any gate to add it to your circuit.
 
-## React Compiler
+The users can add as many gates as they want and simulate live circuits with the given inputs,outputs,Vcc(power source) and Gnd(ground).
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Installation:
+### Web Application :
+- Requirements:
+    - Node.js
+    - VS code (or any code editor with command line)
+    - Internet (Only during intial installation)
+- Download the source code into your computer/laptop.
+- Open it in your code editor and in the terminal type:
 
-Note: This will impact Vite dev & build performances.
+    `
+    npm install
+    `
 
-## Expanding the ESLint configuration
+- After the installation is complete
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+    `
+    npm run dev
+    `
+
+- Open the link in the terminal andddddddd you are good to go.
+
+### Android Application :
+- Download the apk by clicking the link given below :
+- [E-Circuits v1.0](https://github.com/J0sh-ini/E-Circuits/releases/download/v1.0/E-Circuits.apk)
+- Allow whatever permission is required . Im not gonna steal yo data :)
+- Though the android version is accessible everywhere , the smaller screen size is a negative.
+
+
+

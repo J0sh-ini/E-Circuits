@@ -365,11 +365,12 @@ export default function CircuitBuilder() {
           onNodeDoubleClick={onNodeDoubleClick}
           onEdgeDoubleClick={onEdgeDoubleClick}
           nodeTypes={nodeTypes}
-          fitView
+          fitView={false}
           panOnDrag={false}
           zoomOnScroll={false}
           zoomOnPinch={false}
           zoomOnDoubleClick={false}
+        //  translateExtent={[[0,0],[1200,720]]}
         >
           
         

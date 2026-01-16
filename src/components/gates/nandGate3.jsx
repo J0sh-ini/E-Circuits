@@ -9,7 +9,7 @@ import './styles.css';
     return (
     <div >
       <img src={gateImg} className='icImg'/> 
-      <div className="icName">IC7400</div>
+      <div className="icName">IC7410</div>
       <Handle
         type="target"
         position={Position.Top}

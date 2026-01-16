@@ -21,10 +21,16 @@ export default function Sidebar({ onSpawnNode }) {
           background: "#1a1a1a",
           color: "#a4a4a4",
           margin: "0",
-          padding: "2.125rem 0.625rem 0.625rem 0.625rem",
+          padding: "3.125rem 0.625rem 1.625rem 0.625rem",
           
         }}
-      > Simple Circuit Designer
+      ><a 
+      href="https://github.com/J0sh-ini/E-Circuits" 
+      target="_blank"
+      style={{color:"#a4a4a4",
+              fontSize:'1.4rem'
+      }}
+      >E-Circuits</a> 
       </h3>
       <div
         style={{
@@ -53,7 +59,7 @@ export default function Sidebar({ onSpawnNode }) {
           onDoubleClick={() => onSpawnNode("andGate3")}
           style={{cursor: 'pointer'}}
         >
-          AND3 Gate
+         3AND Gate
         </div>
         {/* Draggable OR Gate */}
         <div
@@ -68,7 +74,7 @@ export default function Sidebar({ onSpawnNode }) {
           onDoubleClick={() => onSpawnNode("orGate3")}
           style={{cursor: 'pointer'}}
         >
-          OR3 Gate
+          3OR Gate
         </div>
         {/* Draggable NOT Gate */}
         <div
@@ -90,7 +96,7 @@ export default function Sidebar({ onSpawnNode }) {
           onDoubleClick={() => onSpawnNode("nandGate3")}
           style={{cursor: 'pointer'}}
         >
-          NAND3 Gate
+          3NAND Gate
         </div>
         <div
           className="dndnode"
@@ -104,7 +110,7 @@ export default function Sidebar({ onSpawnNode }) {
           onDoubleClick={() => onSpawnNode("norGate3")}
           style={{cursor: 'pointer'}}
         >
-          NOR3 Gate
+          3NOR Gate
         </div>
         <div
           className="dndnode"
@@ -118,7 +124,7 @@ export default function Sidebar({ onSpawnNode }) {
           onDoubleClick={() => onSpawnNode("xorGate3")}
           style={{cursor: 'pointer'}}
         >
-          XOR3 Gate
+          3XOR Gate
         </div>
         <div
           className="help dndnode"

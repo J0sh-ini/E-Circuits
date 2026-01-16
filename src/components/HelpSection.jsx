@@ -6,10 +6,11 @@ import notPin from '../images/notPin.png';
 import nandPin from '../images/nandPin.png';
 import norPin from '../images/norPin.png';
 import xorPin from '../images/xorPin.png';
+import ThreeIPgates from '../images/3IPgates.png'
 const HelpSection = ({ isOpen, onClose, children }) => {
   const [page,setPage]=useState(0);
   if (!isOpen) return null;
-  const maxPage=6;
+  const maxPage=7;
 
   // Define the modal content
   const modalContent = (
@@ -74,28 +75,32 @@ const HelpSection = ({ isOpen, onClose, children }) => {
         3)Outputs are given at the top of the circuit ,Complete your circuit and check out how it works<br></br>
         4)Select unwanted wire or gate and click backspace to remove them */}
         </div>) :<></>
-        }       
-         { (page===1)?  (<div><h3>And gate</h3>
+        }    
+        { (page===2)?  (<div><h3>And gate</h3>
         <img src={andPin} style={{width:'100%'}}></img>
           </div>) :<></>
+          }   
+         { (page===1)?  (<div><h3>PPin Configuration for Three Input Gates</h3>
+        <img src={ThreeIPgates} style={{width:'50%'}}></img>
+          </div>) :<></>
           }
-          { (page===2)?  (<div><h3>Or gate</h3>
+          { (page===3)?  (<div><h3>Or gate</h3>
         <img src={orPin} style={{width:'100%'}}></img>
           </div>) :<></>
           }
-          { (page===3)?  (<div><h3>Not gate</h3>
+          { (page===4)?  (<div><h3>Not gate</h3>
         <img src={notPin} style={{width:'100%'}}></img>
           </div>) :<></>
           }
-          { (page===4)?  (<div><h3>Nand gate</h3>
+          { (page===5)?  (<div><h3>Nand gate</h3>
         <img src={nandPin} style={{width:'100%'}}></img>
           </div>) :<></>
           }
-          { (page===5)?  (<div><h3>Nor gate</h3>
+          { (page===6)?  (<div><h3>Nor gate</h3>
         <img src={norPin} style={{width:'100%'}}></img>
           </div>) :<></>
           }
-          { (page===6)?  (<div><h3>Xor gate</h3>
+          { (page===7)?  (<div><h3>Xor gate</h3>
         <img src={xorPin} style={{width:'100%'}}></img>
           </div>) :<></>
           }

@@ -1,5 +1,8 @@
 {
   "appId": "com.ECircuits.app",
   "appName": "E-Circuits",
-  "webDir": "dist"
+  "webDir": "dist",
+  "android":{
+    "path": "E:/E-Circuits android/android"
+  }
 }

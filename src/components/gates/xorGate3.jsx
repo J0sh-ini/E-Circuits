@@ -5,7 +5,7 @@ import gateImg from "../../images/ic_images(1).png"
 import './styles.css';
 
 
-  const AndGateNode = () => {
+  const XorGateNode3 = () => {
     return (
     <div >
       <img src={gateImg} className='icImg'/> 
@@ -19,74 +19,74 @@ import './styles.css';
       <Handle
         type="target"
         position={Position.Top}
-        id="a" 
+        id="c" 
         className="handleStyle top two"
       />
       {/* Input B (Bottom Left) */}
       <Handle
-        type="target"
+        type="source"
         position={Position.Top}
-        id="b" 
+        id="abc" 
         className="handleStyle top three"
       />
       <Handle
-        type="source"
+        type="target"
         position={Position.Top}
-        id="ab"
+        id="g"
         className="handleStyle top four"
       />
       <Handle
         type="target"
         position={Position.Top}
-        id="c"
+        id="h"
         className="handleStyle top five"
       />
       <Handle
         type="target"
         position={Position.Top}
-        id="d" 
+        id="i" 
         className="handleStyle top six"
       />
       <Handle
         type="source"
         position={Position.Top}
-        id="cd"     
+        id="ghi"     
         className="handleStyle top seven"
       />
       <Handle
         type="target"
         position={Position.Bottom}
-        id="e" 
+        id="a" 
         className="handleStyle bottom one"
       />     
       <Handle
         type="target"
         position={Position.Bottom}
-        id="f" 
+        id="b" 
         className="handleStyle bottom two"
       />
       <Handle
-        type="source"
+        type="target"
         position={Position.Bottom}
-        id="ef"
+        id="d"
         className="handleStyle bottom three"
       />
       <Handle
         type="target"
         position={Position.Bottom}
-        id="g"
+        id="e"
         className="handleStyle bottom four"
       />
       <Handle
         type="target"
         position={Position.Bottom}
-        id="h" 
+        id="f" 
         className="handleStyle bottom five"
       />
       <Handle
         type="source"
         position={Position.Bottom}
-        id="gh" 
+        id="def" 
         className="handleStyle bottom six"
       />
       <Handle
@@ -100,4 +100,4 @@ import './styles.css';
   );
 };
 
-export default AndGateNode;
+export default XorGateNode3;

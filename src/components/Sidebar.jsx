@@ -48,7 +48,13 @@ export default function Sidebar({ onSpawnNode }) {
         >
           AND Gate
         </div>
-
+        <div
+          className="dndnode"
+          onDoubleClick={() => onSpawnNode("andGate3")}
+          style={{cursor: 'pointer'}}
+        >
+          AND3 Gate
+        </div>
         {/* Draggable OR Gate */}
         <div
           className="dndnode"
@@ -57,7 +63,13 @@ export default function Sidebar({ onSpawnNode }) {
         >
           OR Gate
         </div>
-
+        <div
+          className="dndnode"
+          onDoubleClick={() => onSpawnNode("orGate3")}
+          style={{cursor: 'pointer'}}
+        >
+          OR3 Gate
+        </div>
         {/* Draggable NOT Gate */}
         <div
           className="dndnode"
@@ -75,6 +87,13 @@ export default function Sidebar({ onSpawnNode }) {
         </div>
         <div
           className="dndnode"
+          onDoubleClick={() => onSpawnNode("nandGate3")}
+          style={{cursor: 'pointer'}}
+        >
+          NAND3 Gate
+        </div>
+        <div
+          className="dndnode"
           onDoubleClick={() => onSpawnNode("norGate")}
           style={{cursor: 'pointer'}}
         >
@@ -82,10 +101,24 @@ export default function Sidebar({ onSpawnNode }) {
         </div>
         <div
           className="dndnode"
+          onDoubleClick={() => onSpawnNode("norGate3")}
+          style={{cursor: 'pointer'}}
+        >
+          NOR3 Gate
+        </div>
+        <div
+          className="dndnode"
           onDoubleClick={() => onSpawnNode("xorGate")}
           style={{cursor: 'pointer'}}
         >
           XOR Gate
+        </div>
+        <div
+          className="dndnode"
+          onDoubleClick={() => onSpawnNode("xorGate3")}
+          style={{cursor: 'pointer'}}
+        >
+          XOR3 Gate
         </div>
         <div
           className="help dndnode"

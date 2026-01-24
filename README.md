@@ -19,7 +19,9 @@ Double tap on any gate to add it to your circuit.
 The users can add as many gates as they want and simulate live circuits with the given inputs,outputs,Vcc(power source) and Gnd(ground).
 
 ## Installation:
-### Web Application :
+### Website :
+[https://e-circuitz.vercel.app/](https://e-circuitz.vercel.app/)
+### Web Application (run locally) :
 - Requirements:
     - Node.js
     - VS code (or any code editor with command line)

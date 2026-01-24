@@ -10,10 +10,10 @@ import {
 
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import sideBarIcon from "./images/sideMenuIcon.png"
+import sideBarIcon from "./images/sidemenuIcon.png"
 import Sidebar from "./components/Sidebar";
 import AndGateNode from "./components/gates/andGate";
-import AndGateNode3 from "./components/gates/andgate3";
+import AndGateNode3 from "./components/gates/andGate3";
 import OrGateNode from "./components/gates/orGate";
 import OrGateNode3 from "./components/gates/orGate3";
 import NotGateNode from "./components/gates/notGate";

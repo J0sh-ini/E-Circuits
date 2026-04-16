@@ -1,41 +1,155 @@
-
-.dndnode{
-    
-    height: 2.5rem;
-    min-height: 2.5rem;
-    flex-shrink: 0;
-    border: 1px solid #333;
-    border-radius: 0.312rem;
-    padding: 0.312rem;
-    margin-bottom: 0.625rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: grab;
-    background: #a8a8a8ff;
+/* Sidebar Container styling */
+.modern-sidebar {
+  width: 15rem;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  height: 100%;
 }
-.dndnode:hover{
-    background-color: aqua;
 
-    width: 6rem;
+.modern-sidebar.closed {
+  margin-left: -15rem;
+  box-shadow: none;
+}
+
+.modern-sidebar.open {
+  margin-left: 0;
+}
+
+.sidebar-header {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.01) 0%, rgb(0, 0, 0) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin: 0;
+  padding: 1.5rem 1rem 1.25rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-title {
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 3rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  background: linear-gradient(90deg, #bbbbbb, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+.sidebar-title:hover {
+  text-shadow: 0 4px 16px rgba(255, 255, 255, 0.5);
+}
+
+.sidebar-content {
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-grow: 1;
+}
+
+.sidebar-content h3 {
+  color: #888;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.5rem 0.25rem;
+}
+
+.dndnode {
+  height: 2.75rem;
+  min-height: 2.75rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.6rem;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: grab;
+  background: rgba(45, 45, 52, 0.5);
+  color: #cecece;
+  font-weight: 500;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.dndnode::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  transform: skewX(-20deg);
+  transition: all 0.5s;
+}
+
+.dndnode:hover::before {
+  left: 150%;
+}
+
+.dndnode:hover {
+  background: rgba(65, 65, 75, 0.8);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25), 0 0 0 1px inset rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.dndnode:active {
+  transform: translateY(1px);
+  cursor: grabbing;
+}
+
+.help.dndnode {
+  background: rgba(60, 120, 255, 0.15);
+  border-color: rgba(60, 120, 255, 0.3);
+  color: #a3c2ff;
+  justify-content: center;
+  margin-top: auto;
+  font-weight: 600;
+}
+
+.help.dndnode:hover {
+  background: rgba(60, 120, 255, 0.25);
+  border-color: rgba(60, 120, 255, 0.5);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(60, 120, 255, 0.25);
 }
 
 /* Scrollbar styling for sidebar */
-div::-webkit-scrollbar {
-    width: 0.5rem;
+.sidebar-content::-webkit-scrollbar {
+  width: 6px;
 }
 
-div::-webkit-scrollbar-track {
-    background: #6c6c6c;
+.sidebar-content::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-div::-webkit-scrollbar-thumb {
-    background: #4a4a4a;
-    border-radius: 0.25rem;
+.sidebar-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
 }
 
-div::-webkit-scrollbar-thumb:hover {
-    background: #5a5a5a;
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
-
-

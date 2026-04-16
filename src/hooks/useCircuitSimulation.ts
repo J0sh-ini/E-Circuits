@@ -220,7 +220,7 @@ export function useCircuitSimulation(
               nodeValues.set(edge.target + "_inputs", {
                 d1: 0, set1: 0, reset1: 0, clock1: 0,
                 d2: 0, set2: 0, reset2: 0, clock2: 0,
-                jk1: 0, preset1: 0, clear1: 0, j1: 0,
+                k1: 0, preset1: 0, clear1: 0, j1: 0,
                 preset2: 0, clear2: 0, j2: 0, k2: 0
               });
             }
@@ -235,7 +235,7 @@ export function useCircuitSimulation(
             if (edge.targetHandle === "reset2") inputs.reset2 = sourceVal;
             if (edge.targetHandle === "clock2") inputs.clock2 = sourceVal;
 
-            if (edge.targetHandle === "jk1") inputs.jk1 = sourceVal;
+            if (edge.targetHandle === "k1") inputs.k1 = sourceVal;
             if (edge.targetHandle === "preset1") inputs.preset1 = sourceVal;
             if (edge.targetHandle === "clear1") inputs.clear1 = sourceVal;
             if (edge.targetHandle === "j1") inputs.j1 = sourceVal;
@@ -270,9 +270,9 @@ export function useCircuitSimulation(
                 if (inputs.clear1) { q1 = 0; notq1 = 1; }
                 else if (inputs.preset1) { q1 = 1; notq1 = 0; }
                 else if (prevClk1 === 0 && inputs.clock1 === 1) {
-                  if (inputs.j1 === 0 && inputs.jk1 === 1) { q1 = 0; notq1 = 1; }
-                  else if (inputs.j1 === 1 && inputs.jk1 === 0) { q1 = 1; notq1 = 0; }
-                  else if (inputs.j1 === 1 && inputs.jk1 === 1) { q1 = q1 ? 0 : 1; notq1 = q1 ? 0 : 1; }
+                  if (inputs.j1 === 0 && inputs.k1 === 1) { q1 = 0; notq1 = 1; }
+                  else if (inputs.j1 === 1 && inputs.k1 === 0) { q1 = 1; notq1 = 0; }
+                  else if (inputs.j1 === 1 && inputs.k1 === 1) { q1 = q1 ? 0 : 1; notq1 = q1 ? 0 : 1; }
                 }
                 if (inputs.clear2) { q2 = 0; notq2 = 1; }
                 else if (inputs.preset2) { q2 = 1; notq2 = 0; }

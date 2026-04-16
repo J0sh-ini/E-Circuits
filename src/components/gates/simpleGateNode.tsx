@@ -23,6 +23,8 @@ const SimpleGateNode = ({ type }: {type:string}) => {
     }
   }, [type]);
 
+  const isThreeInput = label.includes("3");
+  const isSingleInput = label === "NOT";
 
   return (
     <div style={{
@@ -41,12 +43,12 @@ const SimpleGateNode = ({ type }: {type:string}) => {
     }}>
       <div style={{ fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.05em' }}>{label}</div>
 
-      {type === "notGate" ? (
+      {isSingleInput ? (
         <div style={{ position: 'absolute', left: '-12px', top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center' }}>
           <span style={{ fontSize: '0.65rem', marginRight: '4px' }}>A</span>
           <Handle type="target" position={Position.Left} id="a" style={{ top: 'auto', bottom: 'auto', position: 'relative', transform: 'none' }} />
         </div>
-      ) : type.includes("3") ? (
+      ) : isThreeInput ? (
         <>
           <div style={{ position: 'absolute', left: '-12px', top: '20%', display: 'flex', alignItems: 'center' }}>
             <span style={{ fontSize: '0.65rem', marginRight: '4px' }}>A</span>
@@ -74,11 +76,12 @@ const SimpleGateNode = ({ type }: {type:string}) => {
         </>
       )}
 
+
       <div style={{ position: 'absolute', right: '-12px', top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center' }}>
         <Handle
           type="source"
           position={Position.Right}
-          id={type==='notGate' ? "nota" : type.includes("3") ? "abc" : "ab"}
+          id={isSingleInput ? "nota" : isThreeInput ? "abc" : "ab"}
           style={{ top: 'auto', bottom: 'auto', position: 'relative', transform: 'none' }}
         />
         <span style={{ fontSize: '0.65rem', marginLeft: '4px' }}>Y</span>

@@ -15,7 +15,7 @@ import Sidebar from "./components/Sidebar";
 import DetailedGateNode from "./components/gates/detailedGateNode";
 import SimpleGateNode from "./components/gates/simpleGateNode";
 import InputNode from "./components/gates/inputComponent";
-
+import DetailedFlipFlopNode from "./components/gates/detailedFlipFlopNode";
 import ClockNode from "./components/gates/clockNode";
 import { useSimpleCircuitSimulation } from "./hooks/useSimpleCircuitSimulation";
 import { useCircuitSimulation } from "./hooks/useCircuitSimulation";
@@ -23,7 +23,7 @@ import PowerNode from "./components/gates/powerNode";
 import OutputNode from "./components/gates/outputComponent";
 import './App.css';
 import { CircuitNode, CircuitEdge } from "./types";
-
+import SimplifiedFlipFlopNodes from "./components/gates/simplifiedFilpFlopNodes";
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
@@ -149,9 +149,9 @@ export default function CircuitBuilder() {
       inputNode: InputNode,
       outputNode: OutputNode,
       clockNode: ClockNode,
-      dFlipFlop: DFlipFlopNode,
-      tFlipFlop: TFlipFlopNode,
-      jkFlipFlop: JKFlipFlopNode,
+      dFlipFlop: SimplifiedFlipFlopNodes,
+      tFlipFlop: SimplifiedFlipFlopNodes,
+      jkFlipFlop: SimplifiedFlipFlopNodes,
       detailedDFlipFlop: DetailedFlipFlopNode,
       detailedJkFlipFlop: DetailedFlipFlopNode,
       simpleAndGate: SimpleGateNode,
@@ -238,7 +238,7 @@ export default function CircuitBuilder() {
           id: getId(),
           type: nodeType,
           position: finalPosition,
-          data: { label: `${nodeType} node`, clk: 0, prevClk: 0, q: 0, qNot: 1, d: 0, t: 0, j: 0, k: 0, value: 0 },
+          data: { type : nodeType, label: `${nodeType} node`, clk: 0, prevClk: 0, q: 0, qNot: 1, d: 0, t: 0, j: 0, k: 0, value: 0 },
         };
       }
       else if (nodeType === "detailedDFlipFlop") {

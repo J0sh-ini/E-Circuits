@@ -1,49 +1,88 @@
-
-.icName{
+.icName {
     font-family: 'Times New Roman', Times, serif;
-    position:absolute;
-    left:60%;
-    bottom:50%;
-    color:#756b53;
-}
-.icImg{
-    height:5rem;
-    width:11.25rem;
-    display:block;
-}
-.handleStyle
-{   
-    height:0.8rem;
-    width:0.8rem;
-    background: #00000000 ;
-    border-color:#00000000; 
+    position: absolute;
+    left: 60%;
+    bottom: 50%;
+    color: #756b53;
 }
 
-.top{
-    top:9%
+.icImg {
+    height: 5rem;
+    width: 11.25rem;
+    display: block;
 }
-.bottom{
+
+.handleStyle {
+    height: 0.8rem;
+    width: 0.8rem;
+    background: #00000000;
+    border-color: #00000000;
+}
+
+.top {
+    top: 9%
+}
+
+.bottom {
     bottom: 9%;
 }
-.one
-{
-    left:7%;
+
+.one {
+    left: 7%;
 }
-.two{
-    left:21%
+
+.two {
+    left: 21%
 }
-.three{
-    left:35%;
+
+.three {
+    left: 35%;
 }
-.four{
-    left:49%;
+
+.four {
+    left: 49%;
 }
-.five{
-    left:63%;
+
+.five {
+    left: 63%;
 }
-.six{
-    left:77%;
+
+.six {
+    left: 77%;
 }
-.seven{
-    left:90%;
+
+.seven {
+    left: 90%;
+}
+
+.p16_1 {
+    left: 6%;
+}
+
+.p16_2 {
+    left: 18.5%;
+}
+
+.p16_3 {
+    left: 31%;
+}
+
+.p16_4 {
+    left: 43.5%;
+}
+
+.p16_5 {
+    left: 56%;
+}
+
+.p16_6 {
+    left: 68.5%;
+}
+
+.p16_7 {
+    left: 81%;
+}
+
+.p16_8 {
+    left: 93.5%;
 }

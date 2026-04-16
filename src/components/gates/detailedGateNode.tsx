@@ -3,13 +3,8 @@ import { Handle, Position } from "@xyflow/react";
 import gateImg from "../../images/ic_images(1).png"
 import './styles.css';
 
-interface DetailedGateNodeProps {
-  data: {
-    type: string;
-  };
-}
 
-const DetailedGateNode = ({ data }: DetailedGateNodeProps) => {
+const DetailedGateNode = ({ data }: {data: { type: string}}) => {
 
   const icName = useMemo(() => {
     switch (data.type) {
@@ -28,8 +23,7 @@ const DetailedGateNode = ({ data }: DetailedGateNodeProps) => {
     }
   }, [data.type]);
 
-  const isThreeInput = data.type ?  : false;
-  const isSingleInput = ;
+
 
   const powerHandles = (
     <>

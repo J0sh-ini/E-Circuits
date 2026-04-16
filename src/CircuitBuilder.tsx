@@ -1,12 +1,12 @@
 import React, { useEffect, useCallback, useRef, useMemo, useState } from "react";
 import {
   ReactFlow,
-  MiniMap,
-  Controls,
   Background,
   useNodesState,
   useEdgesState,
-  addEdge
+  addEdge,
+  Connection,
+  Edge
 
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -27,11 +27,12 @@ import InputNode from "./components/gates/inputComponent";
 import OutputNode from "./components/gates/outputComponent";
 import PowerNode from "./components/gates/powerNode";
 import './App.css';
+import { CircuitNode, CircuitEdge } from "./types";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
-const initialNodes =[];
+const initialNodes :CircuitNode[] =[];
 for(let i=1;i<9;i++)
 {
       initialNodes.push({
@@ -52,7 +53,6 @@ for(let i=1;i<9;i++)
       });
 }
 
-// Add permanent power nodes
 initialNodes.push({
   id: "gnd",
   type: "powerNode",
@@ -71,9 +71,9 @@ initialNodes.push({
   draggable: false,
 });
 export default function CircuitBuilder() {
-  const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const [nodes, setNodes, onNodesChange] = useNodesState<CircuitNode>(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<CircuitEdge>([]);
   const [sideBar,setSideBar]=useState(true);
   
 
@@ -99,25 +99,23 @@ export default function CircuitBuilder() {
   );
 
   const onConnect = useCallback(
-    (params) => {
+    (params :Connection | Edge) => {
       let strokeColor = '#222';
       if (params.source === "vcc" || params.target === "vcc") {
         strokeColor = '#ff0000';
       } else if (params.source === "gnd" || params.target === "gnd") {
         strokeColor = '#00aa00';
       }
-      setEdges((eds) => addEdge({ ...params, style: { stroke: strokeColor, strokeWidth: 3 } }, eds));
+      setEdges((eds ) => addEdge({ ...params, style: { stroke: strokeColor, strokeWidth: 3 } } as Edge, eds));
     },
     [setEdges]
   );
 
   const onNodeDoubleClick = useCallback(
-    (event, node) => {
-      // Prevent deletion of input, output, and power nodes
+    (event :React.MouseEvent, node :CircuitNode) => {
       if (node.type === "inputNode" || node.type === "outputNode" || node.type === "powerNode") {
         return;
       }
-      // Remove the node and any connected edges
       setNodes((nds) => nds.filter((n) => n.id !== node.id));
       setEdges((eds) => 
         eds.filter((e) => e.source !== node.id && e.target !== node.id)
@@ -127,39 +125,95 @@ export default function CircuitBuilder() {
   );
 
   const onEdgeDoubleClick = useCallback(
-    (event, edge) => {
-      // Remove the edge
+    (event :React.MouseEvent, edge :Edge) => {
       setEdges((eds) => eds.filter((e) => e.id !== edge.id));
     },
     [setEdges]
   );
 
   const spawnNode = useCallback(
-    (nodeType) => {
-      // Spawn node at a default center position
-      let newNode;
-      if(nodeType === "andGate" || nodeType === "orGate" || nodeType === "norGate" || nodeType === "nandGate" ||nodeType === "xorGate" ) {
+    (nodeType: string, position?: { x: number; y: number }) => {
+      const finalPosition = position || { x: 300, y: 250 };
+
+      let newNode: CircuitNode;
+      if (nodeType === "andGate" || nodeType === "orGate" || nodeType === "norGate" || nodeType === "nandGate" || nodeType === "xorGate") {
         newNode = {
-        id: getId(),
-        type: nodeType,
-        position: { x: 300, y: 250 },
-        data: { label: `${nodeType} node`, vcc:0,a:0,b:0,ab:0,c:0,d:0,cd:0,e:0,f:0,ef:0,g:0,h:0,gh:0,gnd:0,value:0}, 
+          id: getId(),
+          type: nodeType,
+          position: finalPosition,
+          data: { type: nodeType, label: `${nodeType} node`, vcc: 0, a: 0, b: 0, ab: 0, c: 0, d: 0, cd: 0, e: 0, f: 0, ef: 0, g: 0, h: 0, gh: 0, gnd: 0, value: 0 },
         };
       }
-      else if(nodeType === "andGate3" || nodeType === "orGate3" || nodeType === "norGate3" || nodeType === "nandGate3" ||nodeType === "xorGate3" ) {
+      else if (nodeType === "andGate3" || nodeType === "orGate3" || nodeType === "norGate3" || nodeType === "nandGate3" || nodeType === "xorGate3") {
         newNode = {
-        id: getId(),
-        type: nodeType,
-        position: { x: 300, y: 250 },
-        data: { label: `${nodeType} node`, vcc:0,a:0,b:0,c:0,abc:0,d:0,e:0,f:0,def:0,g:0,h:0,i:0,ghi:0,gnd:0,value:0}, 
+          id: getId(),
+          type: nodeType,
+          position: finalPosition,
+          data: { type: nodeType, label: `${nodeType} node`, vcc: 0, a: 0, b: 0, c: 0, abc: 0, d: 0, e: 0, f: 0, def: 0, g: 0, h: 0, i: 0, ghi: 0, gnd: 0, value: 0 },
         };
       }
-      else  {
+      else if (nodeType === "notGate") {
         newNode = {
-        id: getId(),
-        type: nodeType,
-        position: { x: 300, y: 250 },
-        data: { label: `${nodeType} node`, vcc:0,a:0,nota:0,b:0,notb:0,c:0,notc:0,d:0,notd:0,e:0,note:0,f:0,notf:0,gnd:0,value:0}, 
+          id: getId(),
+          type: nodeType,
+          position: finalPosition,
+          data: { type: nodeType, label: `${nodeType} node`, vcc: 0, a: 0, nota: 0, b: 0, notb: 0, c: 0, notc: 0, d: 0, notd: 0, e: 0, note: 0, f: 0, notf: 0, gnd: 0, value: 0 },
+        };
+      }
+      else if (nodeType === "dFlipFlop" || nodeType === "tFlipFlop" || nodeType === "jkFlipFlop") {
+        newNode = {
+          id: getId(),
+          type: nodeType,
+          position: finalPosition,
+          data: { label: `${nodeType} node`, clk: 0, prevClk: 0, q: 0, qNot: 1, d: 0, t: 0, j: 0, k: 0, value: 0 },
+        };
+      }
+      else if (nodeType === "detailedDFlipFlop") {
+        newNode = {
+          id: getId(),
+          type: nodeType,
+          position: finalPosition,
+          data: { type: nodeType, label: `D FlipFlop node`, vcc: 0, gnd: 0, clock1: 0, prevClk1: 0, q1: 0, notq1: 1, d1: 0, set1: 0, reset1: 0, clock2: 0, prevClk2: 0, q2: 0, notq2: 1, d2: 0, set2: 0, reset2: 0, value: 0 },
+        };
+      }
+      else if (nodeType === "detailedJkFlipFlop") {
+        newNode = {
+          id: getId(),
+          type: nodeType,
+          position: finalPosition,
+          data: { type: nodeType, label: `JK FlipFlop node`, vcc: 0, gnd: 0, clock1: 0, prevClk1: 0, q1: 0, notq1: 1, jk1: 0, preset1: 0, clear1: 0, j1: 0, clock2: 0, prevClk2: 0, q2: 0, notq2: 1, preset2: 0, clear2: 0, j2: 0, k2: 0, value: 0 },
+        };
+      }
+      else if (nodeType === "simpleAndGate" || nodeType === "simpleOrGate" || nodeType === "simpleNorGate" || nodeType === "simpleNandGate" || nodeType === "simpleXorGate") {
+        newNode = {
+          id: getId(),
+          type: nodeType,
+          position: finalPosition,
+          data: { type: nodeType, label: `${nodeType} node`, a: 0, b: 0, ab: 0 },
+        };
+      }
+      else if (nodeType === "simpleAndGate3" || nodeType === "simpleOrGate3" || nodeType === "simpleNorGate3" || nodeType === "simpleNandGate3" || nodeType === "simpleXorGate3") {
+        newNode = {
+          id: getId(),
+          type: nodeType,
+          position: finalPosition,
+          data: { type: nodeType, label: `${nodeType} node`, a: 0, b: 0, c: 0, abc: 0 },
+        };
+      }
+      else if (nodeType === "simpleNotGate") {
+        newNode = {
+          id: getId(),
+          type: nodeType,
+          position: finalPosition,
+          data: { type: nodeType, label: `${nodeType} node`, a: 0, nota: 0 },
+        };
+      }
+      else {
+        newNode = {
+          id: getId(),
+          type: nodeType,
+          position: finalPosition,
+          data: { label: `${nodeType} node`, vcc: 0, a: 0, nota: 0, b: 0, notb: 0, c: 0, notc: 0, d: 0, notd: 0, e: 0, note: 0, f: 0, notf: 0, gnd: 0, value: 0 },
         };
       }
       setNodes((nds) => nds.concat(newNode));
@@ -168,13 +222,13 @@ export default function CircuitBuilder() {
   );
 
   // Helper function to check if a gate has both VCC and GND connected
-  const hasVccAndGnd = useCallback((nodeId, edgesList) => {
-    const hasVcc = edgesList.some(edge => edge.target === nodeId && edge.source === "vcc");
+  const hasVccAndGnd = useCallback((nodeId:string, edgesList:CircuitEdge[]) => {
+    const hasVcc = edgesList.some(edge  => edge.target === nodeId && edge.source === "vcc");
     const hasGnd = edgesList.some(edge => edge.target === nodeId && edge.source === "gnd");
     return hasVcc && hasGnd;
   }, []);
 
-  // Create a dependency value that changes when input values change
+
   const inputValuesDependency = useMemo(() => {
     return nodes
       .filter(n => n.type === "inputNode")
@@ -243,7 +297,7 @@ export default function CircuitBuilder() {
 
         if (targetNode.type === "andGate" || targetNode.type === "orGate" || targetNode.type === "nandGate" || targetNode.type === "norGate" || targetNode.type === "xorGate") {
         
-          // Check if gate has both VCC and GND connected
+          
           const hasPower = hasVccAndGnd(edge.target, edges);
           
           if (!nodeValues.has(edge.target + "_inputs")) {

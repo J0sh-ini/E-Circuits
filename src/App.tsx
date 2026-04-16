@@ -1,7 +1,5 @@
-// src/App.jsx
 import { ReactFlowProvider } from "@xyflow/react";
-import CircuitBuilder from "./CircuitBuilder";
-// Wrap the whole thing in the Provider
+import CircuitBuilder from "./CircuitBuilder.tsx";
 export default function App() {
   return (
     <ReactFlowProvider>

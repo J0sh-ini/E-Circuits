@@ -47,7 +47,7 @@ const SimplifiedFlipFlopNodes = ({data}:{data:{type:string}}) => {
             </div>
         }
 
-      <div style={{ position: 'absolute', left: '-12px', top: '75%', display: 'flex', alignItems: 'center' }}>
+      <div style={{ position: 'absolute', left: '-12px', top: isJK?'50%':'76%', display: 'flex', alignItems: 'center' }}>
         <span style={{ fontSize: '0.6rem', marginRight: '4px', display: 'flex', alignItems: 'center' }}>
           <svg width="8" height="10" viewBox="0 0 10 10">
             <path d="M 0 0 L 10 5 L 0 10 Z" fill="#999" />

@@ -31,7 +31,7 @@ const DetailedGateNode = ({ data }: {data: { type: string}}) => {
       <Handle type="target" position={Position.Bottom} id="gnd" className="handleStyle bottom seven" />
     </>
   );
-
+  
   return (
     <div>
       <img src={gateImg} className='icImg'/> 
@@ -70,7 +70,7 @@ const DetailedGateNode = ({ data }: {data: { type: string}}) => {
           <Handle type="target" position={Position.Bottom} id="e" className="handleStyle bottom five" />
           <Handle type="source" position={Position.Bottom} id="def" className="handleStyle bottom six" />
         </>
-      ) : (data?.type?.includes("3")) ? (
+      ) : (data.type.includes("3")) ? (
         <>
           <Handle type="target" position={Position.Top} id="c" className="handleStyle top two" />
           <Handle type="source" position={Position.Top} id="abc" className="handleStyle top three" />

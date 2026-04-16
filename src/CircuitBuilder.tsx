@@ -17,7 +17,6 @@ import SimpleGateNode from "./components/gates/simpleGateNode";
 import InputNode from "./components/gates/inputComponent";
 import DetailedFlipFlopNode from "./components/gates/detailedFlipFlopNode";
 import ClockNode from "./components/gates/clockNode";
-import { useSimpleCircuitSimulation } from "./hooks/useSimpleCircuitSimulation";
 import { useCircuitSimulation } from "./hooks/useCircuitSimulation";
 import PowerNode from "./components/gates/powerNode";
 import OutputNode from "./components/gates/outputComponent";
@@ -128,9 +127,7 @@ export default function CircuitBuilder() {
 
     return () => clearInterval(intervalId);
   }, [isClockRunning, hasClockNode, clockIntervalMs, setNodes]);
-
   useCircuitSimulation(nodes, edges, setNodes);
-  useSimpleCircuitSimulation(nodes, edges, setNodes);
 
   const nodeTypes = useMemo(
     () => ({
@@ -254,7 +251,7 @@ export default function CircuitBuilder() {
           id: getId(),
           type: nodeType,
           position: finalPosition,
-          data: { type: nodeType, label: `JK FlipFlop node`, vcc: 0, gnd: 0, clock1: 0, prevClk1: 0, q1: 0, notq1: 1, jk1: 0, preset1: 0, clear1: 0, j1: 0, clock2: 0, prevClk2: 0, q2: 0, notq2: 1, preset2: 0, clear2: 0, j2: 0, k2: 0, value: 0 },
+          data: { type: nodeType, label: `JK FlipFlop node`, vcc: 0, gnd: 0, clock1: 0, prevClk1: 0, q1: 0, notq1: 1, k1: 0, preset1: 0, clear1: 0, j1: 0, clock2: 0, prevClk2: 0, q2: 0, notq2: 1, preset2: 0, clear2: 0, j2: 0, k2: 0, value: 0 },
         };
       }
       else if (nodeType === "simpleAndGate" || nodeType === "simpleOrGate" || nodeType === "simpleNorGate" || nodeType === "simpleNandGate" || nodeType === "simpleXorGate") {
@@ -350,8 +347,15 @@ const toggleClockNode = useCallback(() => {
  function clearAllNodes() {
     const nodesToSet = [...initialNodes];
     if (!isSimplifiedMode) {
-      nodesToSet.push({ id: "gnd", type: "powerNode", position: { x: 8, y: 350 }, data: { type: "gnd", label: "GND" }, deletable: false, draggable: false });
-      nodesToSet.push({ id: "vcc", type: "powerNode", position: { x: 8, y: 250 }, data: { type: "vcc", label: "VCC" }, deletable: false, draggable: false });
+      const hasGnd = nodesToSet.some(n => n.id === 'gnd');
+      const hasVcc = nodesToSet.some(n => n.id === 'vcc');
+      
+      if (!hasGnd) {
+        nodesToSet.push({ id: "gnd", type: "powerNode", position: { x: 170, y: 230 }, data: { type: "gnd", label: "GND" }, deletable: false, draggable: false });
+      }
+      if (!hasVcc) {
+        nodesToSet.push({ id: "vcc", type: "powerNode", position: { x: 170, y: 330 }, data: { type: "vcc", label: "VCC" }, deletable: false, draggable: false });
+      }
     }
     setNodes(nodesToSet);
     setEdges([]);

@@ -16,6 +16,7 @@ import DetailedGateNode from "./components/gates/detailedGateNode";
 import SimpleGateNode from "./components/gates/simpleGateNode";
 import InputNode from "./components/gates/inputComponent";
 
+import ClockNode from "./components/gates/clockNode";
 import { useSimpleCircuitSimulation } from "./hooks/useSimpleCircuitSimulation";
 import { useCircuitSimulation } from "./hooks/useCircuitSimulation";
 import PowerNode from "./components/gates/powerNode";
@@ -47,23 +48,6 @@ for(let i=1;i<9;i++)
       });
 }
 
-initialNodes.push({
-  id: "gnd",
-  type: "powerNode",
-  position: { x: 8, y: 350 },
-  data: { type: "gnd", label: "GND" },
-  deletable: false,
-  draggable: false,
-});
-
-initialNodes.push({
-  id: "vcc",
-  type: "powerNode",
-  position: { x: 8, y: 250 },
-  data: { type: "vcc", label: "VCC" },
-  deletable: false,
-  draggable: false,
-});
 export default function CircuitBuilder() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<CircuitNode>(initialNodes);
@@ -71,6 +55,79 @@ export default function CircuitBuilder() {
   const [sideBar,setSideBar]=useState(true);
   const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
   const [isSimplifiedMode, setIsSimplifiedMode] = useState<boolean>(true);
+  const [isClockRunning, setIsClockRunning] = useState(false);
+  const [clockIntervalMs, setClockIntervalMs] = useState(1000);
+  const hasClockNode = useMemo(() => nodes.some(n => n.type === 'clockNode'), [nodes]);
+
+
+  useEffect(() => {
+    setNodes((nds) => {
+      const hasVcc = nds.some((n) => n.id === "vcc");
+      const hasGnd = nds.some((n) => n.id === "gnd");
+
+      if (!isSimplifiedMode) {
+        if (hasVcc && hasGnd) return nds;
+
+        const newNodes = [...nds];
+        if (!hasGnd) {
+          newNodes.push({
+            id: "gnd",
+            type: "powerNode",
+            position: { x: 170, y: 230 },
+            data: { type: "gnd", label: "GND" },
+            deletable: false,
+            draggable: false,
+            hidden: false
+          });
+        }
+        if (!hasVcc) {
+          newNodes.push({
+            id: "vcc",
+            type: "powerNode",
+            position: { x: 170, y: 330 },
+            data: { type: "vcc", label: "VCC" },
+            deletable: false,
+            draggable: false,
+          });
+        }
+        return newNodes;
+      } else {
+        if (!hasVcc && !hasGnd) return nds;
+        return nds.filter((n) => n.id !== "vcc" && n.id !== "gnd");
+      }
+    });
+
+    if (isSimplifiedMode) {
+      setEdges((eds) => eds.filter(e => e.source !== "vcc" && e.source !== "gnd" && e.target !== "vcc" && e.target !== "gnd"));
+    }
+  }, [isSimplifiedMode]);
+
+
+  useEffect(() => {
+    if (!isClockRunning || !hasClockNode) return;
+
+    const intervalId = setInterval(() => {
+      setNodes((nds) => {
+        let changed = false;
+        const newNodes = nds.map(n => {
+          if (n.type === 'clockNode') {
+            changed = true;
+            return {
+              ...n,
+              data: {
+                ...n.data,
+                value: n.data.value === 1 ? 0 : 1
+              }
+            };
+          }
+          return n;
+        });
+        return changed ? newNodes : nds;
+      });
+    }, clockIntervalMs);
+
+    return () => clearInterval(intervalId);
+  }, [isClockRunning, hasClockNode, clockIntervalMs, setNodes]);
 
   useCircuitSimulation(nodes, edges, setNodes);
   useSimpleCircuitSimulation(nodes, edges, setNodes);
@@ -134,6 +191,8 @@ export default function CircuitBuilder() {
       setEdges((eds) => 
         eds.filter((e) => e.source !== node.id && e.target !== node.id)
       );
+            if (node.type === "clockNode") setIsClockRunning(false);
+
     },
     [setNodes, setEdges]
   );
@@ -234,6 +293,27 @@ export default function CircuitBuilder() {
     },
     [setNodes]
   );
+
+const toggleClockNode = useCallback(() => {
+    if (hasClockNode) {
+      setNodes(nds => nds.filter(n => n.type !== 'clockNode'));
+      setEdges(eds => eds.filter(e => {
+        const sourceNode = nodes.find(n => n.id === e.source);
+        const targetNode = nodes.find(n => n.id === e.target);
+        return sourceNode?.type !== 'clockNode' && targetNode?.type !== 'clockNode';
+      }));
+      setIsClockRunning(false);
+    } else {
+      const newNode: CircuitNode = {
+        id: getId(),
+        type: 'clockNode',
+        position: { x: 300, y: 150 },
+        data: { label: 'Clock', value: 0 },
+      };
+      setNodes(nds => nds.concat(newNode));
+    }
+  }, [hasClockNode, setNodes, setEdges, nodes]);
+
  const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
@@ -279,12 +359,13 @@ export default function CircuitBuilder() {
   }
 
   
+ 
   return (
     <div className="main-div">
-      <button 
-      onClick={toggleSidebar} 
-      className="sideBar-button">
-        <img src={sideBarIcon} style={{height: "1.875rem"}}></img>
+      <button
+        onClick={toggleSidebar}
+        className="sideBar-button">
+        <img src={sideBarIcon} style={{ height: "1.875rem" }} alt="Sidebar toggle"></img>
       </button>
       <button
         onClick={clearAllNodes}
@@ -292,9 +373,28 @@ export default function CircuitBuilder() {
       >
         Clear All
       </button>
-      {sideBar && <Sidebar onSpawnNode={spawnNode}
-              isSimplifiedMode={isSimplifiedMode}
- />}
+
+      <Sidebar
+        isOpen={sideBar}
+        onSpawnNode={spawnNode}
+        hasClockNode={hasClockNode}
+        onToggleClockNode={toggleClockNode}
+        isSimplifiedMode={isSimplifiedMode}
+      />
+
+      <div className="mode-toggle-container">
+        <span className={!isSimplifiedMode ? "active" : ""}>Detailed</span>
+        <label className="toggle-switch">
+          <input
+            type="checkbox"
+            checked={isSimplifiedMode}
+            onChange={() => setIsSimplifiedMode(!isSimplifiedMode)}
+          />
+          <span className="slider round"></span>
+        </label>
+        <span className={isSimplifiedMode ? "active" : ""}>Simplified</span>
+      </div>
+
       <div
         className="reactflow-wrapper"
         ref={reactFlowWrapper}
@@ -305,22 +405,47 @@ export default function CircuitBuilder() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          onNodeDoubleClick={onNodeDoubleClick}
-          onEdgeDoubleClick={onEdgeDoubleClick}
+          onInit={setReactFlowInstance}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onNodeDoubleClick={onNodeDoubleClick as any}
+          onEdgeDoubleClick={onEdgeDoubleClick as any}
           nodeTypes={nodeTypes}
           fitView
           panOnDrag={false}
           zoomOnScroll={false}
           zoomOnPinch={false}
           zoomOnDoubleClick={false}
-          translateExtent={[[0,0],[1200,720]]}
+          translateExtent={[[0, 0], [1200, 720]]}
         >
-          
-        
-          <Background  />
+          <Background />
         </ReactFlow>
-      
       </div>
+
+      {hasClockNode && (
+        <div className="clock-controller-panel">
+          <h4>Clock</h4>
+          <button
+            className={`clock-button ${isClockRunning ? 'stop' : 'start'}`}
+            onClick={() => setIsClockRunning(!isClockRunning)}
+          >
+            {isClockRunning ? `Stop` : 'Start'}
+          </button>
+
+          <div className="slider-container">
+            <label style={{ color: 'black', fontSize: '1rem', fontWeight: 'bold' }}>Time : {(clockIntervalMs / 1000).toFixed(1)}s</label>
+            <input
+              type="range"
+              min="100"
+              max="2000"
+              step="100"
+              value={clockIntervalMs}
+              onChange={(e) => setClockIntervalMs(Number(e.target.value))}
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

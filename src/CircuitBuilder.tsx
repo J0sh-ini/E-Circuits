@@ -16,6 +16,8 @@ import DetailedGateNode from "./components/gates/detailedGateNode";
 import SimpleGateNode from "./components/gates/simpleGateNode";
 import InputNode from "./components/gates/inputComponent";
 
+import { useSimpleCircuitSimulation } from "./hooks/useSimpleCircuitSimulation";
+import { useCircuitSimulation } from "./hooks/useCircuitSimulation";
 import PowerNode from "./components/gates/powerNode";
 import OutputNode from "./components/gates/outputComponent";
 import './App.css';
@@ -67,12 +69,14 @@ export default function CircuitBuilder() {
   const [nodes, setNodes, onNodesChange] = useNodesState<CircuitNode>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<CircuitEdge>([]);
   const [sideBar,setSideBar]=useState(true);
-  
+  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
+  const [isSimplifiedMode, setIsSimplifiedMode] = useState<boolean>(true);
 
+  useCircuitSimulation(nodes, edges, setNodes);
+  useSimpleCircuitSimulation(nodes, edges, setNodes);
 
   const nodeTypes = useMemo(
     () => ({
-      // complex
       andGate: DetailedGateNode,
       andGate3: DetailedGateNode,
       orGate: DetailedGateNode,
@@ -93,7 +97,6 @@ export default function CircuitBuilder() {
       jkFlipFlop: JKFlipFlopNode,
       detailedDFlipFlop: DetailedFlipFlopNode,
       detailedJkFlipFlop: DetailedFlipFlopNode,
-      // simple
       simpleAndGate: SimpleGateNode,
       simpleAndGate3: SimpleGateNode,
       simpleOrGate: SimpleGateNode,
@@ -231,273 +234,50 @@ export default function CircuitBuilder() {
     },
     [setNodes]
   );
-
-  // Helper function to check if a gate has both VCC and GND connected
-  const hasVccAndGnd = useCallback((nodeId:string, edgesList:CircuitEdge[]) => {
-    const hasVcc = edgesList.some(edge  => edge.target === nodeId && edge.source === "vcc");
-    const hasGnd = edgesList.some(edge => edge.target === nodeId && edge.source === "gnd");
-    return hasVcc && hasGnd;
+ const onDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  const onDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
 
-  const inputValuesDependency = useMemo(() => {
-    return nodes
-      .filter(n => n.type === "inputNode")
-      .map(n => `${n.id}:${n.data.value}`)
-      .join("|");
-  }, [nodes]);
+      const type = event.dataTransfer.getData('application/reactflow');
 
-  useEffect(() => {
-   
-    const nodeValues = new Map();    
-    nodes.forEach((node) => {
-      if (node.type === "inputNode") {
-        nodeValues.set(node.id, node.data.value ? 1 : 0);
+      if (typeof type === 'undefined' || !type) {
+        return;
       }
-    });
 
-    for (let i = 0; i < 5; i++) {
-      edges.forEach((edge) => {
-        let sourceVal = 0;
-        const sourceNode = nodes.find((n) => n.id === edge.source);
-        
-        if (sourceNode?.type === "notGate") {
-          const nodeData = nodeValues.get(edge.source);
-          if (edge.sourceHandle === "nota") {
-            sourceVal = nodeData?.nota || 0;
-          } else if (edge.sourceHandle === "notb") {
-            sourceVal = nodeData?.notb || 0;
-          } else if (edge.sourceHandle === "notc") {
-            sourceVal = nodeData?.notc || 0;
-          } else if (edge.sourceHandle === "notd") {
-            sourceVal = nodeData?.notd || 0;
-          } else if (edge.sourceHandle === "note") {
-            sourceVal = nodeData?.note || 0;
-          } else if (edge.sourceHandle === "notf") {
-            sourceVal = nodeData?.notf || 0;
-          }
-        } else if (sourceNode?.type === "andGate" || sourceNode?.type === "orGate" || sourceNode?.type === "nandGate" || sourceNode?.type === "norGate" || sourceNode?.type === "xorGate") {
-          const nodeData = nodeValues.get(edge.source);
-          if (edge.sourceHandle === "ab") {
-            sourceVal = nodeData?.ab || 0;
-          } else if (edge.sourceHandle === "cd") {
-            sourceVal = nodeData?.cd || 0;
-          } else if (edge.sourceHandle === "ef") {
-            sourceVal = nodeData?.ef || 0;
-          } else if (edge.sourceHandle === "gh") {
-            sourceVal = nodeData?.gh || 0;
-          }
-        } 
-        else if (sourceNode?.type === "andGate3" || sourceNode?.type === "orGate3" || sourceNode?.type === "nandGate3" || sourceNode?.type === "norGate3" || sourceNode?.type === "xorGate3") {
-          const nodeData = nodeValues.get(edge.source);
-          if (edge.sourceHandle === "abc") {
-            sourceVal = nodeData?.abc || 0;
-          } else if (edge.sourceHandle === "def") {
-            sourceVal = nodeData?.def || 0;
-          } else if (edge.sourceHandle === "ghi") {
-            sourceVal = nodeData?.ghi || 0;
-          }
-        }else {
-          sourceVal = nodeValues.get(edge.source) || 0;
-        }
-
-        const targetNode = nodes.find((n) => n.id === edge.target);
-        if (!targetNode) return;
-        console.log(i + edge.source + " " + edge.target);
-        console.log(targetNode);
-
-        if (targetNode.type === "andGate" || targetNode.type === "orGate" || targetNode.type === "nandGate" || targetNode.type === "norGate" || targetNode.type === "xorGate") {
-        
-          
-          const hasPower = hasVccAndGnd(edge.target, edges);
-          
-          if (!nodeValues.has(edge.target + "_inputs")) {
-            nodeValues.set(edge.target + "_inputs", { a: 0, b: 0 ,c:0,d:0,e:0,f:0,g:0,h:0,ab:0,cd:0,ef:0,gh:0});
-          }
-
-          const inputs = nodeValues.get(edge.target + "_inputs");
-
-          if (edge.targetHandle === "a") inputs.a = sourceVal;
-          if (edge.targetHandle === "b") inputs.b = sourceVal;
-          if (edge.targetHandle === "c") inputs.c = sourceVal;
-          if (edge.targetHandle === "d") inputs.d = sourceVal;
-          if (edge.targetHandle === "e") inputs.e = sourceVal;
-          if (edge.targetHandle === "f") inputs.f = sourceVal;
-          if (edge.targetHandle === "g") inputs.g = sourceVal;
-          if (edge.targetHandle === "h") inputs.h = sourceVal;
-
-          let ab,cd,ef,gh,output = 0;
-          
-          // Only compute outputs if gate has power connections
-          if (hasPower) {
-            if (targetNode.type === "andGate") {
-              ab = inputs.a && inputs.b ? 1 : 0;
-              cd=inputs.c && inputs.d ?1:0;
-              ef=inputs.e&&inputs.f?1:0;
-              gh=inputs.g&&inputs.h?1:0;
-            } else if (targetNode.type === "orGate") {
-              ab = inputs.a || inputs.b ? 1 : 0;
-              cd=inputs.c || inputs.d ?1:0;
-              ef=inputs.e||inputs.f?1:0;
-              gh=inputs.g||inputs.h?1:0;
-            } else if (targetNode.type === "nandGate") {
-              ab = (inputs.a && inputs.b) ? 0 : 1;
-              cd=(inputs.c && inputs.d) ? 0 : 1;
-              ef=(inputs.e&&inputs.f) ? 0 : 1;
-              gh=(inputs.g&&inputs.h) ? 0 : 1;
-            } else if (targetNode.type === "norGate") {
-              ab = (inputs.a || inputs.b) ? 0 : 1;
-              cd=(inputs.c || inputs.d) ? 0 : 1;
-              ef=(inputs.e||inputs.f) ? 0 : 1;
-              gh=(inputs.g||inputs.h) ? 0 : 1;
-            } else if (targetNode.type === "xorGate") {
-              ab = (inputs.a !== inputs.b) ? 1 : 0;
-              cd=(inputs.c !== inputs.d) ? 1 : 0;
-              ef=(inputs.e!==inputs.f) ? 1 : 0;
-              gh=(inputs.g!==inputs.h) ? 1 : 0;
-            }
-          }
-
-          nodeValues.set(edge.target, {output,ab,cd,ef,gh});
-        }
-        if (targetNode.type === "andGate3" || targetNode.type === "orGate3" || targetNode.type === "nandGate3" || targetNode.type === "norGate3" || targetNode.type === "xorGate3") {
-          const hasPower = hasVccAndGnd(edge.target, edges);
-          
-          if (!nodeValues.has(edge.target + "_inputs")) {
-            nodeValues.set(edge.target + "_inputs", { a:0,b:0,c:0,d:0,e:0,f:0,g:0,h:0,i:0,abc:0,def:0,ghi:0});
-          }
-
-          const inputs = nodeValues.get(edge.target + "_inputs");
-
-          if (edge.targetHandle === "a") inputs.a = sourceVal;
-          if (edge.targetHandle === "b") inputs.b = sourceVal;
-          if (edge.targetHandle === "c") inputs.c = sourceVal;
-          if (edge.targetHandle === "d") inputs.d = sourceVal;
-          if (edge.targetHandle === "e") inputs.e = sourceVal;
-          if (edge.targetHandle === "f") inputs.f = sourceVal;
-          if (edge.targetHandle === "g") inputs.g = sourceVal;
-          if (edge.targetHandle === "h") inputs.h = sourceVal;
-          if (edge.targetHandle === "i") inputs.i = sourceVal;
-
-          let abc,def,ghi,output = 0;
-          
-          // Only compute outputs if gate has power connections
-          if (hasPower) {
-            if (targetNode.type === "andGate3") {
-              abc = inputs.a && inputs.b && inputs.c ? 1 : 0;
-              def = inputs.d && inputs.e && inputs.f ? 1 : 0;
-              ghi = inputs.g && inputs.h && inputs.i ? 1 : 0;
-            } else if (targetNode.type === "orGate3") {
-              abc = inputs.a || inputs.b || inputs.c ? 1 : 0;
-              def = inputs.d || inputs.e || inputs.f ? 1 : 0;
-              ghi = inputs.g || inputs.h || inputs.i ? 1 : 0;
-            } else if (targetNode.type === "nandGate3") {
-              abc = inputs.a && inputs.b && inputs.c ? 0 : 1;
-              def = inputs.d && inputs.e && inputs.f ? 0 : 1;
-              ghi = inputs.g && inputs.h && inputs.i ? 0 : 1;
-            } else if (targetNode.type === "norGate3") {
-              abc = inputs.a || inputs.b || inputs.c ? 0 : 1;
-              def = inputs.d || inputs.e || inputs.f ? 0 : 1;
-              ghi = inputs.g || inputs.h || inputs.i ? 0 : 1;
-            } else if (targetNode.type === "xorGate3") {
-              abc = (inputs.a !== inputs.b ? 1 : 0 ) !== inputs.c ? 1 : 0;
-              def = (inputs.d !== inputs.e ? 1 : 0 ) !== inputs.f ? 1 : 0;
-              ghi = (inputs.g !== inputs.h ? 1 : 0 ) !== inputs.i ? 1 : 0;
-            }
-          }
-
-          nodeValues.set(edge.target, {output,abc,def,ghi});
-        }
-        if (targetNode.type === "notGate") {
-          // Check if gate has both VCC and GND connected
-          const hasPower = hasVccAndGnd(edge.target, edges);
-          
-          if (!nodeValues.has(edge.target + "_inputs")) {
-            nodeValues.set(edge.target + "_inputs", { a: 0, b: 0, c: 0, d: 0, e: 0, f: 0 });
-          }
-          const inputs = nodeValues.get(edge.target + "_inputs");
-          if (edge.targetHandle === "a") inputs.a = sourceVal;
-          if (edge.targetHandle === "b") inputs.b = sourceVal;
-          if (edge.targetHandle === "c") inputs.c = sourceVal;
-          if (edge.targetHandle === "d") inputs.d = sourceVal;
-          if (edge.targetHandle === "e") inputs.e = sourceVal;
-          if (edge.targetHandle === "f") inputs.f = sourceVal;
-
-          let nota = 0, notb = 0, notc = 0, notd = 0, note = 0, notf = 0;
-          
-          // Only compute outputs if gate has power connections
-          if (hasPower) {
-            nota = inputs.a ? 0 : 1;
-            notb = inputs.b ? 0 : 1;
-            notc = inputs.c ? 0 : 1;
-            notd = inputs.d ? 0 : 1;
-            note = inputs.e ? 0 : 1;
-            notf = inputs.f ? 0 : 1;
-          }
-
-          nodeValues.set(edge.target, { nota, notb, notc, notd, note, notf });
-        }
-
-        if (targetNode.type === "outputNode") {
-          nodeValues.set(edge.target, sourceVal);
-        }
+      if (!reactFlowInstance) {
+        spawnNode(type);
+        return;
+      }
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
       });
-    }
 
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (node.type === "andGate" || node.type==='orGate' || node.type==="norGate" || node.type==="nandGate" || node.type==="xorGate" ) {
-          const outputs = nodeValues.get(node.id) || { ab: 0, cd: 0, ef: 0, gh: 0, output: 0 };
-      
-          if (node.data.ab !== outputs.ab || node.data.cd !== outputs.cd || node.data.ef !== outputs.ef || node.data.gh !== outputs.gh) {
-            return {
-              ...node,
-              data: { ...node.data, ab: outputs.ab, cd: outputs.cd, ef: outputs.ef, gh: outputs.gh },
-            };
-          }
-        }
-        if (node.type === "andGate3" || node.type==='orGate3' || node.type==="norGate3" || node.type==="nandGate3" || node.type==="xorGate3" ) {
-          const outputs = nodeValues.get(node.id) || { abc: 0,def: 0, ghi: 0, output: 0 };
-      
-          if (node.data.abc !== outputs.abc || node.data.def !== outputs.def || node.data.ghi !== outputs.ghi) {
-            return {
-              ...node,
-              data: { ...node.data, abc: outputs.abc, def: outputs.def, ghi: outputs.ghi },
-            };
-          }
-        }
-        if (node.type === "notGate") {
-          const outputs = nodeValues.get(node.id) || { nota: 0, notb: 0, notc: 0, notd: 0, note: 0, notf: 0 };
-          if (node.data.nota !== outputs.nota || node.data.notb !== outputs.notb || node.data.notc !== outputs.notc || node.data.notd !== outputs.notd || node.data.note !== outputs.note || node.data.notf !== outputs.notf) {
-            return {
-              ...node,
-              data: { ...node.data, nota: outputs.nota, notb: outputs.notb, notc: outputs.notc, notd: outputs.notd, note: outputs.note, notf: outputs.notf },
-            };
-          }
-        }
-        if (node.type === "outputNode") {
-          const val = nodeValues.get(node.id) || 0;
-          if (node.data.inputVal !== val) {
-            return { ...node, data: { ...node.data, inputVal: val } };
-          }
-        }
-
-        return node;
-      })
-    );
-    
-
-  }, [edges, inputValuesDependency]);
+      spawnNode(type, position);
+    },
+    [reactFlowInstance, spawnNode]
+  );
   function toggleSidebar()
   {
     setSideBar(!sideBar);
   }
   
-  function clearAllNodes()
-  {
-    setNodes(initialNodes);
+ function clearAllNodes() {
+    const nodesToSet = [...initialNodes];
+    if (!isSimplifiedMode) {
+      nodesToSet.push({ id: "gnd", type: "powerNode", position: { x: 8, y: 350 }, data: { type: "gnd", label: "GND" }, deletable: false, draggable: false });
+      nodesToSet.push({ id: "vcc", type: "powerNode", position: { x: 8, y: 250 }, data: { type: "vcc", label: "VCC" }, deletable: false, draggable: false });
+    }
+    setNodes(nodesToSet);
     setEdges([]);
+    setIsClockRunning(false);
   }
+
   
   return (
     <div className="main-div">
@@ -512,7 +292,9 @@ export default function CircuitBuilder() {
       >
         Clear All
       </button>
-      {sideBar && <Sidebar onSpawnNode={spawnNode} />}
+      {sideBar && <Sidebar onSpawnNode={spawnNode}
+              isSimplifiedMode={isSimplifiedMode}
+ />}
       <div
         className="reactflow-wrapper"
         ref={reactFlowWrapper}

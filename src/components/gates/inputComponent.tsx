@@ -1,13 +1,11 @@
-// src/nodes/InputNode.jsx
 import React from "react";
 import { Handle, Position, useReactFlow } from "@xyflow/react";
-
-const InputNode = ({ id, data }) => {
+import { InputNodeData } from "../../types";
+const InputNode = ({ id, data }:{id:string,data:InputNodeData}) => {
   const { updateNodeData } = useReactFlow();
   const isOn = data.value || false;
 
   const toggleSwitch = () => {
-    // This updates the main 'nodes' state in App.jsx automatically
     updateNodeData(id, { value: !isOn });
   };
 
@@ -31,15 +29,13 @@ const InputNode = ({ id, data }) => {
     >
       
 
-      {/* The Toggle Switch UI */}
       <div
        
         style={{
           cursor: "pointer",
-         // padding: "0.625rem",
           height:"1.56rem",
           width:"1.56rem",
-          background: isOn ? "#9d0000ff" : "#ccc", // Green if ON
+          background: isOn ? "#9d0000ff" : "#ccc", 
           color: "white",
           borderRadius: "50%",
           userSelect: "none",
@@ -48,7 +44,7 @@ const InputNode = ({ id, data }) => {
         
       </div>
 
-      {/* Source Handle (Right Side) */}
+  
       <Handle
         type="source"
         position={Position.Top}

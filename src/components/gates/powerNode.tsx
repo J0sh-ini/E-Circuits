@@ -1,8 +1,8 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
 import './styles.css';
-
-const PowerNode = ({ data }) => {
+import { PowerNodeData } from "../../types";
+const PowerNode = ({ data }  : { data: PowerNodeData}) => {
   const isGND = data.type === "gnd";
   
   const style = {

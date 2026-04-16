@@ -13,9 +13,11 @@ import "@xyflow/react/dist/style.css";
 import sideBarIcon from "./images/sidemenuIcon.png"
 import Sidebar from "./components/Sidebar";
 import DetailedGateNode from "./components/gates/detailedGateNode";
+import SimpleGateNode from "./components/gates/simpleGateNode";
 import InputNode from "./components/gates/inputComponent";
-import OutputNode from "./components/gates/outputComponent";
+
 import PowerNode from "./components/gates/powerNode";
+import OutputNode from "./components/gates/outputComponent";
 import './App.css';
 import { CircuitNode, CircuitEdge } from "./types";
 

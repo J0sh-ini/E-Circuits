@@ -12,17 +12,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import sideBarIcon from "./images/sidemenuIcon.png"
 import Sidebar from "./components/Sidebar";
-import AndGateNode from "./components/gates/andGate";
-import AndGateNode3 from "./components/gates/andGate3";
-import OrGateNode from "./components/gates/orGate";
-import OrGateNode3 from "./components/gates/orGate3";
-import NotGateNode from "./components/gates/notGate";
-import NandGateNode from "./components/gates/nandGate";
-import NandGateNode3 from "./components/gates/nandGate3";
-import NorGateNode from "./components/gates/norGate";
-import NorGateNode3 from "./components/gates/norGate3";
-import XorGateNode from "./components/gates/xorGate";
-import XorGateNode3 from "./components/gates/xorGate3";
+import DetailedGateNode from "./components/gates/detailedGateNode";
 import InputNode from "./components/gates/inputComponent";
 import OutputNode from "./components/gates/outputComponent";
 import PowerNode from "./components/gates/powerNode";
@@ -80,21 +70,40 @@ export default function CircuitBuilder() {
 
   const nodeTypes = useMemo(
     () => ({
-      andGate: AndGateNode,
-      andGate3: AndGateNode3,
-      orGate: OrGateNode,
-      orGate3: OrGateNode3,
-      notGate: NotGateNode,
-      nandGate: NandGateNode,
-      nandGate3: NandGateNode3,
-      norGate: NorGateNode,
-      norGate3: NorGateNode3,
-      xorGate: XorGateNode,
-      xorGate3: XorGateNode3,
+      // complex
+      andGate: DetailedGateNode,
+      andGate3: DetailedGateNode,
+      orGate: DetailedGateNode,
+      orGate3: DetailedGateNode,
+      notGate: DetailedGateNode,
+      nandGate: DetailedGateNode,
+      nandGate3: DetailedGateNode,
+      norGate: DetailedGateNode,
+      norGate3: DetailedGateNode,
+      xorGate: DetailedGateNode,
+      xorGate3: DetailedGateNode,
       powerNode: PowerNode,
       inputNode: InputNode,
-      outputNode: OutputNode,      
-    }),
+      outputNode: OutputNode,
+      clockNode: ClockNode,
+      dFlipFlop: DFlipFlopNode,
+      tFlipFlop: TFlipFlopNode,
+      jkFlipFlop: JKFlipFlopNode,
+      detailedDFlipFlop: DetailedFlipFlopNode,
+      detailedJkFlipFlop: DetailedFlipFlopNode,
+      // simple
+      simpleAndGate: SimpleGateNode,
+      simpleAndGate3: SimpleGateNode,
+      simpleOrGate: SimpleGateNode,
+      simpleOrGate3: SimpleGateNode,
+      simpleNotGate: SimpleGateNode,
+      simpleNandGate: SimpleGateNode,
+      simpleNandGate3: SimpleGateNode,
+      simpleNorGate: SimpleGateNode,
+      simpleNorGate3: SimpleGateNode,
+      simpleXorGate: SimpleGateNode,
+      simpleXorGate3: SimpleGateNode,
+    } as any),
     []
   );
 

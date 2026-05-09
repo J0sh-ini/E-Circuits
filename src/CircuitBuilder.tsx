@@ -361,9 +361,11 @@ const toggleClockNode = useCallback(() => {
     setEdges([]);
     setIsClockRunning(false);
   }
+  const loadCircuit = (nodes: CircuitNode[], edges: CircuitEdge[]) => {
+    setNodes(nodes);
+    setEdges(edges);
+  };
 
-  
- 
   return (
     <div className="main-div">
       <button
@@ -384,6 +386,9 @@ const toggleClockNode = useCallback(() => {
         hasClockNode={hasClockNode}
         onToggleClockNode={toggleClockNode}
         isSimplifiedMode={isSimplifiedMode}
+        nodes={nodes}
+        edges={edges}
+        onLoad={loadCircuit}
       />
 
       <div className="mode-toggle-container">

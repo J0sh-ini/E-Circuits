@@ -13,6 +13,8 @@
     "@capacitor/android": "^8.0.0",
     "@capacitor/cli": "^8.0.0",
     "@capacitor/core": "^8.0.0",
+    "@supabase/supabase-js": "^2.104.0",
+    "@szhsin/react-accordion": "^1.4.1",
     "@xyflow/react": "^12.9.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"

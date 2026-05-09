@@ -1,5 +1,5 @@
 import { Handle, Position } from "@xyflow/react";
-import gateImg from "../../images/16PinIC.jpeg"
+import gateImg from "../../images/16PinIC.png"
 import './styles.css';
 
 interface DetailedFlipFlopNodeProps {
@@ -12,12 +12,12 @@ const DetailedFlipFlopNode = ({ data }: DetailedFlipFlopNodeProps) => {
 
   const isD = data.type === "detailedDFlipFlop";
 
-  const icName = isD ? "IC7474 (D)" : "IC74112 (JK)";
+  const icName = isD ? "IC7474-D" : "IC74112-JK";
 
   return (
     <div>
       <img src={gateImg} className='icImg' />
-      <div className="icName" style={{ left: '46%', top: '40%', color: '#ccc', textShadow: '0 1px 3px rgba(0,0,0,0.8)', fontSize: '0.8rem' }}>{icName}</div>
+      <div className="icName" >{icName}</div>
 
       {!isD ? (
         <>

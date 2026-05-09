@@ -150,7 +150,11 @@ export interface DetailedJKFlipFlopData extends BaseGateData {
   j2: number;
   k2: number;
 }
-
+export interface user{
+  email:string,
+  username:string,
+  password:string
+}
 export type CircuitNodeData =
   | GateNodeData2Input
   | GateNodeData3Input
@@ -168,5 +172,12 @@ export type CircuitNodeData =
   | DetailedJKFlipFlopData
   | PowerNodeData;
 
+export interface uploadData{
+  email:string,
+  data:[{
+    nodes: CircuitNode[],
+  edges:CircuitEdge[]}
+]
+}
 export type CircuitNode = Node<CircuitNodeData>;
 export type CircuitEdge = Edge;
